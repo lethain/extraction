@@ -11,7 +11,4 @@ setup(
     license='LICENSE.txt',
     description='Extract basic info from HTML webpages.',
     long_description=open('README.txt').read(),
-    install_requires=[
-        "caldav == 0.1.4",
-    ],
 )
