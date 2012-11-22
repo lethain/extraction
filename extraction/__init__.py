@@ -8,6 +8,7 @@ Retrieve and extract data from HTML documents.
     >>> resp = extr.extract(html)
     >>> print resp
 """
+import importlib
 
 class Extracted(object):
     "Contains data extracted from a page."
@@ -53,10 +54,10 @@ class Extracted(object):
         if urls is None:
             urls = []
 
-        assert(type(titles) in (list, tuple))
-        assert(type(descriptions) in (list, tuple))
-        assert(type(images) in (list, tuple))
-        assert(type(urls) in (list, tuple))
+        assert type(titles) in (list, tuple), "titles must be a list or tuple"
+        assert type(descriptions) in (list, tuple), "descriptions must be a list or tuple"
+        assert type(images) in (list, tuple), "images must be a list or tuple"
+        assert type(urls) in (list, tuple), "urls must be a list or tuple"
 
         self.titles = titles
         self.descriptions = descriptions
@@ -118,13 +119,21 @@ class Extractor(object):
             >>> print extracted
 
         """
-        urls = []
-        titles = []
-        descriptions = []
-        images = []
+        data_types = ('urls', 'titles', 'descriptions', 'images')
+        extracted = dict((x,[]) for x in data_types)
 
-        for technique in self.techniques:
-            print technique
+        for full_technique_path in self.techniques:
+            technique_path_parts = full_technique_path.split('.')
+            assert len(technique_path_parts) > 1, "technique_path_parts must include a module and a class"
+            technique_module_path = ".".join(technique_path_parts[:-1])
+            technique_class_name = technique_path_parts[-1]
+            technique_module = importlib.import_module(technique_module_path)
+            technique_inst = getattr(technique_module, technique_class_name)(extractor=self)
+            technique_extracted = technique_inst.extract(html)
+
+            
+            
+            
         
 
         extracted = Extracted(titles=titles, descriptions=descriptions, images=images, urls=urls)

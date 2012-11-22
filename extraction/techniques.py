@@ -4,10 +4,11 @@ import BeautifulSoup
 class Technique(object):
     def extract(html):
         "Extract data from a string representing an HTML document."
-        titles = []
-        descriptions = []
-        images = []
-        return titles, descriptions, images
+        return {'titles': [],
+                'descriptions': [],
+                'images': [],
+                'urls': [],
+                }
 
 
 class FacebookOpengraphTags(Technique):
@@ -35,6 +36,8 @@ class FacebookOpengraphTags(Technique):
     There are a bunch of other opengraph tags, but they don't seem
     useful to extraction's intent at this point.
     """
-
-    
-    pass
+    return {'titles': [],
+            'descriptions': [],
+            'images': [],
+            'urls': [],
+            }
