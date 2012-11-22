@@ -11,7 +11,7 @@ Extraction is not a web crawling or content retrieval mechanism, rather
 it is a tool to use on data which has always been retrieved or crawled
 by a different tool.
 
-Developed against Python 2.7, but should work with Python 2.5+ if
+Developed against Python 2.7, but should also work with Python 2.6+ if
 you install the importlib requirement.
 
 
@@ -52,6 +52,8 @@ If you want to develop against extraction, you can install from GitHub::
 Then you can run the tests::
 
     python tests.py
+
+All of which should pass in a sane installation.
 
 
 Extraction Techniques
