@@ -1,3 +1,4 @@
+"This file contains techniques for extracting data from HTML pages."
 import BeautifulSoup
 
 

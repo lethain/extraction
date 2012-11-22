@@ -166,9 +166,44 @@ A technique to properly extract this data would look like::
 
     TODO: WRITE THIS EXAMPLE :-)
 
-
 To integrate your technique, take a look at the `Using Custom Techniques and Changing Technique Ordering`
 section above.
+
+Adding new techniques incorporating microformats is an interesting
+area for some consideration. Most microformats have very limited
+usage, but where they are in use they tend to be high quality sources
+of information.
+
+
+Subclassing Extracted to Extract New Types of Data
+--------------------------------------------------
+
+Your techniques can return non-standard keys in the dictionary
+returned by `extract`, which will be available in the `Extracted().values()`
+dictionary. In this way you could fairly easily add support for extracting
+addresses or whatnot.
+
+For a contrived example, we'll extract my address from `willarson.com <http://willarson.com/>`,
+which is in no way a realistic example of extracting an address, and is
+only meant as an example of how to add a new type of extracted data.
+
+As such, to add support for extracting address should look like::
+
+    TODO: WRITE THIS EXAMPLE
+    new Technique that returns addresses
+    new Extracted with property for addresses
+    new Extractor which uses the new Technique and new Extracted
+
+Usage would then look like::
+
+    >>> import requests
+    >>> from my_module import MyExtractor
+    >>> extractor = MyExtractor()
+    >>> extracted = extractor.extract(requests.get("http://willarson.com/")
+    >>> extracted.address
+    "Cole Valey San Francisco, CA USA"
+
+There you have it, extracted addresses as first class extracted data.
 
 
 Passing Parameters to Techniques
