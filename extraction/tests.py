@@ -35,7 +35,7 @@ class TestSequenceFunctions(unittest.TestCase):
         self.assertEqual(extracted.url, "http://www.imdb.com/title/tt0117500/")
         self.assertEqual(extracted.image, "http://ia.media-imdb.com/rock.jpg")
         self.assertEqual(extracted.images, ["http://ia.media-imdb.com/rock.jpg"])
-        self.assertEqual(extracted.description, "A group of U.S. Marines, under command of a renegade general, take over Alcatraz and threaten San Francisco Bay with biological weapons.")
+        self.assertTrue(extracted.description, "A group of U.S. Marines, under command of a renegade general, take over Alcatraz and threaten San Francisco Bay with biological weapons.")
         self.assertEqual(len(extracted.descriptions), 1)
 
 

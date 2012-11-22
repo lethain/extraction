@@ -1,5 +1,5 @@
 "This file contains techniques for extracting data from HTML pages."
-import BeautifulSoup
+from bs4 import BeautifulSoup
 
 
 class Technique(object):
@@ -11,8 +11,15 @@ class Technique(object):
         self.extractor = extractor
         super(Technique, self).__init__(*args, **kwargs)
 
+    def standardize_string(self, value):
+        """
+        Do some light cleaning on string values, currently:
 
-    def extract(html):
+        1. remove duplicate whitespace
+        """
+        return " ".join(value.split())
+
+    def extract(self, html):
         "Extract data from a string representing an HTML document."
         return {'titles': [],
                 'descriptions': [],
@@ -46,11 +53,25 @@ class FacebookOpengraphTags(Technique):
     There are a bunch of other opengraph tags, but they don't seem
     useful to extraction's intent at this point.
     """
+    property_map = {
+        'og:title': 'titles',
+        'og:url': 'urls',
+        'og:image': 'images',
+        'og:description': 'descriptions',
+        }
+
     def extract(self, html):
         "Extract data from Facebook Opengraph tags."
+        extracted = {}
+        soup = BeautifulSoup(html)
+        for meta_tag in soup.find_all('meta'):
+            if 'property' in meta_tag.attrs and 'content' in meta_tag.attrs:
+                property = meta_tag['property']
+                if property in self.property_map:
+                    property_dest = self.property_map[property]
+                    if property_dest not in extracted:
+                        extracted[property_dest] = []
+                    extracted[property_dest].append(self.standardize_string(meta_tag.attrs['content']))
 
-        return {'titles': [],
-                'descriptions': [],
-                'images': [],
-                'urls': [],
-                }
+        return extracted
+

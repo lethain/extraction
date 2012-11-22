@@ -140,9 +140,9 @@ class Extractor(object):
         extracted = {}
         for technique in self.techniques:
             technique_extracted = self.run_technique(technique, html)
-            for data_type, values in technique_extracted.items():
-                if values:
+            for data_type, data_values in technique_extracted.items():
+                if data_values:
                     if data_type not in extracted:
                         extracted[data_type] = []
-                    data_types['data_type'] += values
+                    extracted[data_type] += data_values
         return Extracted(**extracted)
