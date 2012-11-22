@@ -101,12 +101,30 @@ class Extractor(object):
     "Extracts title, summary and image(s) from an HTML document."
     techniques = ["extraction.techniques.FacebookOpengraphTags"]
 
-    def __init__(self, techniques=None):
+    def __init__(self, techniques=None, *args, **kwargs):
         "Extractor."
         if techniques:
             self.techniques = techniques
+        super(Extractor, self).__init__(*args, **kwargs)
 
-        print self.techniques
+    def run_technique(self, technique, html):
+        """
+        Run a given technique against the HTML.
+
+        Technique is a string including the full module path
+        and class name for the technique, for example::
+
+            extraction.techniques.FacebookOpengraphTags
+
+        HTML is a string representing an HTML document.
+        """
+        technique_path_parts = technique.split('.')
+        assert len(technique_path_parts) > 1, "technique_path_parts must include a module and a class"
+        technique_module_path = ".".join(technique_path_parts[:-1])
+        technique_class_name = technique_path_parts[-1]
+        technique_module = importlib.import_module(technique_module_path)
+        technique_inst = getattr(technique_module, technique_class_name)(extractor=self)
+        return technique_inst.extract(html)
 
     def extract(self, html):
         """
@@ -119,22 +137,12 @@ class Extractor(object):
             >>> print extracted
 
         """
-        data_types = ('urls', 'titles', 'descriptions', 'images')
-        extracted = dict((x,[]) for x in data_types)
-
-        for full_technique_path in self.techniques:
-            technique_path_parts = full_technique_path.split('.')
-            assert len(technique_path_parts) > 1, "technique_path_parts must include a module and a class"
-            technique_module_path = ".".join(technique_path_parts[:-1])
-            technique_class_name = technique_path_parts[-1]
-            technique_module = importlib.import_module(technique_module_path)
-            technique_inst = getattr(technique_module, technique_class_name)(extractor=self)
-            technique_extracted = technique_inst.extract(html)
-
-            
-            
-            
-        
-
-        extracted = Extracted(titles=titles, descriptions=descriptions, images=images, urls=urls)
-        return extracted
+        extracted = {}
+        for technique in self.techniques:
+            technique_extracted = self.run_technique(technique, html)
+            for data_type, values in technique_extracted.items():
+                if values:
+                    if data_type not in extracted:
+                        extracted[data_type] = []
+                    data_types['data_type'] += values
+        return Extracted(**extracted)

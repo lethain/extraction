@@ -2,6 +2,15 @@ import BeautifulSoup
 
 
 class Technique(object):
+    def __init__(self, extractor=None, *args, **kwargs):
+        """
+        Capture the extractor this technique is running within,
+        if any.
+        """
+        self.extractor = extractor
+        super(Technique, self).__init__(*args, **kwargs)
+
+
     def extract(html):
         "Extract data from a string representing an HTML document."
         return {'titles': [],
@@ -36,8 +45,11 @@ class FacebookOpengraphTags(Technique):
     There are a bunch of other opengraph tags, but they don't seem
     useful to extraction's intent at this point.
     """
-    return {'titles': [],
-            'descriptions': [],
-            'images': [],
-            'urls': [],
-            }
+    def extract(self, html):
+        "Extract data from Facebook Opengraph tags."
+
+        return {'titles': [],
+                'descriptions': [],
+                'images': [],
+                'urls': [],
+                }
