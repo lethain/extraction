@@ -122,6 +122,9 @@ class Extractor(object):
         titles = []
         descriptions = []
         images = []
+
+        for technique in self.techniques:
+            print technique
         
 
         extracted = Extracted(titles=titles, descriptions=descriptions, images=images, urls=urls)
