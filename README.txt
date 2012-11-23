@@ -24,10 +24,14 @@ An extremely simple example of using `extraction` is::
     >>> import requests
     >>> url = "http://lethain.com/social-hierarchies-in-engineering-organizations/"
     >>> html = requests.get(url).text
-    >>> extracted = extraction.Extractor().extract(html)
+    >>> extracted = extraction.Extractor().extract(html, source_url=url)
     >>> extracted.title
     >>> "Social Hierarchies in Engineering Organizations - Irrational Exuberance"
     >>> print extracted.title, extracted.description, extracted.image, extracted.url
+
+Note that `source_url` is optional in extract, but is recommended
+as it makes it possible to rewrite relative urls and image urls
+into absolute paths. It is not used for fetching data.
 
 More details usage examples, including how to add your own
 extraction mechanisms, are beneath the installation section.
@@ -89,6 +93,9 @@ Using Extraction
 This section covers various ways to use extraction, both using
 the existing extraction techniques as well as add your own.
 
+For more examples, please look in the `extraction/examples`
+directory.
+
 
 Basic Usage
 -----------
@@ -99,7 +106,7 @@ The simplest possible example is the "Hello World" example from above::
     >>> import requests
     >>> url = "http://lethain.com/social-hierarchies-in-engineering-organizations/"
     >>> html = requests.get(url).text
-    >>> extracted = extraction.Extractor().extract(html)
+    >>> extracted = extraction.Extractor().extract(html, source_url=url)
     >>> extracted.title
     >>> "Social Hierarchies in Engineering Organizations - Irrational Exuberance"
     >>> print extracted.title, extracted.description, extracted.image, extracted.url
@@ -181,7 +188,7 @@ Subclassing Extracted to Extract New Types of Data
 --------------------------------------------------
 
 Your techniques can return non-standard keys in the dictionary
-returned by `extract`, which will be available in the `Extracted().values()`
+returned by `extract`, which will be available in the `Extracted()._unexpected_values`
 dictionary. In this way you could fairly easily add support for extracting
 addresses or whatnot.
 
@@ -201,7 +208,7 @@ Usage would then look like::
     >>> import requests
     >>> from my_module import MyExtractor
     >>> extractor = MyExtractor()
-    >>> extracted = extractor.extract(requests.get("http://willarson.com/")
+    >>> extracted = extractor.extract(requests.get("http://willarson.com/"))
     >>> extracted.address
     "Cole Valey San Francisco, CA USA"
 
@@ -228,9 +235,9 @@ or what not.
                 self.something = "something else"
             return super(MyTechnique, self).__init__(*args, **kwargs)
 
-        def extract(html):
+        def extract(html, source_url=None):
             print self.something
-            return super(MyTechnique, self).extract(html)
+            return super(MyTechnique, self).extract(html, source_url=source_url)
 
 Second, all techniques are passed in the Extractor being used
 to process them, so you can bake the customization into an
@@ -246,9 +253,9 @@ extraction.Extractor subclass::
             super(MyExtractor, self).__init__(*args, **kwargs)
 
     class MyTechnique(Technique):
-        class extract(self, html):
+        class extract(self, html, source_url=None):
             print self.extractor.something
-            return super(MyTechnique, self).extract(html)
+            return super(MyTechnique, self).extract(html, source_url=source_url)
 
 Between these two techniques, it should be feasible to get the
 customization of behavior you need.

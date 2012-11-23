@@ -12,7 +12,8 @@ import importlib
 
 class Extracted(object):
     "Contains data extracted from a page."
-    def __init__(self, titles=None, descriptions=None, images=None, urls=None):
+
+    def __init__(self, titles=None, descriptions=None, images=None, urls=None, **kwargs):
         """
         Initialize Extracted instance.
 
@@ -34,7 +35,7 @@ class Extracted(object):
         that case the using code will need to default to the url it fetched
         the HTML from (which the Extractor  doesn't know about, as it is
         agnostic to the source of information)::
-        
+
             >>> import requests
             >>> from extraction import Extractor
             >>> url = "http://lethain.com/"
@@ -43,7 +44,7 @@ class Extracted(object):
             >>> canonical_url = extracted.url if extract.url else url
 
         Titles, descriptions and images should all be lists.
-        The lists should be ordered best to worst.        
+        The lists should be ordered best to worst.
         """
         if titles is None:
             titles = []
@@ -64,6 +65,10 @@ class Extracted(object):
         self.images = images
         self.urls = urls
 
+        # stores unexpected and uncaptured values to avoid crashing if
+        # a technique returns additional types of data
+        self._unexpected_values = kwargs
+
     @property
     def title(self):
         "Return the best title, if any."
@@ -79,7 +84,7 @@ class Extracted(object):
             return self.images[0]
         else:
             return None
-        
+
     @property
     def description(self):
         "Return the best description, if any."
@@ -95,8 +100,8 @@ class Extracted(object):
             return self.urls[0]
         else:
             return None
-      
-        
+
+
 class Extractor(object):
     "Extracts title, summary and image(s) from an HTML document."
     techniques = ["extraction.techniques.FacebookOpengraphTags"]
@@ -126,7 +131,23 @@ class Extractor(object):
         technique_inst = getattr(technique_module, technique_class_name)(extractor=self)
         return technique_inst.extract(html)
 
-    def extract(self, html):
+    def cleanup(self, results, html, source_url=None):
+        """
+        Allows standardizing extracted contents, at this time:
+
+        1. removes multiple whitespaces
+        2. rewrite relative URLs as absolute URLs if source_url is specified
+        """
+
+        # TODO: rewrite images/urls if source_url is specified
+        cleaned_results = {}
+        for data_type, data_values in results.items():
+            if data_type in ('descriptions','titles'):
+                data_values = [" ".join(x.split()) for x in data_values]
+            cleaned_results[data_type] = data_values
+        return cleaned_results
+
+    def extract(self, html, source_url=None):
         """
         Extract contents from a string representing an HTML document.
 
@@ -136,6 +157,9 @@ class Extractor(object):
             >>> extracted = Extractor().extract(html)
             >>> print extracted
 
+        `source_url` is optional, but allows for a certain level of
+        cleanup to be performed, such as converting relative URLs
+        into absolute URLs and such.
         """
         extracted = {}
         for technique in self.techniques:
@@ -145,4 +169,5 @@ class Extractor(object):
                     if data_type not in extracted:
                         extracted[data_type] = []
                     extracted[data_type] += data_values
-        return Extracted(**extracted)
+
+        return Extracted(**self.cleanup(extracted, html, source_url=source_url))

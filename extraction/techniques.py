@@ -11,14 +11,6 @@ class Technique(object):
         self.extractor = extractor
         super(Technique, self).__init__(*args, **kwargs)
 
-    def standardize_string(self, value):
-        """
-        Do some light cleaning on string values, currently:
-
-        1. remove duplicate whitespace
-        """
-        return " ".join(value.split())
-
     def extract(self, html):
         "Extract data from a string representing an HTML document."
         return {'titles': [],
@@ -71,7 +63,7 @@ class FacebookOpengraphTags(Technique):
                     property_dest = self.property_map[property]
                     if property_dest not in extracted:
                         extracted[property_dest] = []
-                    extracted[property_dest].append(self.standardize_string(meta_tag.attrs['content']))
+                    extracted[property_dest].append(meta_tag.attrs['content'])
 
         return extracted
 
