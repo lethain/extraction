@@ -105,11 +105,15 @@ class Extracted(object):
 class Extractor(object):
     "Extracts title, summary and image(s) from an HTML document."
     techniques = ["extraction.techniques.FacebookOpengraphTags"]
+    extracted_class = Extracted
 
-    def __init__(self, techniques=None, *args, **kwargs):
+    def __init__(self, techniques=None, extracted_class=None, *args, **kwargs):
         "Extractor."
         if techniques:
             self.techniques = techniques
+        if extracted_class:
+            self.extracted_class = extracted_class
+
         super(Extractor, self).__init__(*args, **kwargs)
 
     def run_technique(self, technique, html):
@@ -131,6 +135,10 @@ class Extractor(object):
         technique_inst = getattr(technique_module, technique_class_name)(extractor=self)
         return technique_inst.extract(html)
 
+    def cleanup_text(self, value):
+        "Cleanup text values like titles or descriptions."
+        return " ".join(value.split())
+
     def cleanup(self, results, html, source_url=None):
         """
         Allows standardizing extracted contents, at this time:
@@ -143,7 +151,7 @@ class Extractor(object):
         cleaned_results = {}
         for data_type, data_values in results.items():
             if data_type in ('descriptions','titles'):
-                data_values = [" ".join(x.split()) for x in data_values]
+                data_values = [self.cleanup_text(x) for x in data_values]
             cleaned_results[data_type] = data_values
         return cleaned_results
 
@@ -170,4 +178,4 @@ class Extractor(object):
                         extracted[data_type] = []
                     extracted[data_type] += data_values
 
-        return Extracted(**self.cleanup(extracted, html, source_url=source_url))
+        return self.extracted_class(**self.cleanup(extracted, html, source_url=source_url))

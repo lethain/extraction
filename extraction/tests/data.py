@@ -86,3 +86,32 @@ it functioned, just not central to this particular story.</p>
   </body>
 </html>
 """
+
+WILLARSON_COM_HTML = """
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.01//EN" "http://www.w3.org/TR/html4/strict.dtd">
+<html>
+<head>
+<title>Will Larson</title>
+<link rel="stylesheet" href="static/rip.css">
+<script type="text/javascript" src="static/jquery-1.2.6.min.js"></script>
+<script type="text/javascript" src="static/rip.js"></script>
+</head>
+<body>
+
+<div id="top">
+  <div id="name">
+    <h1><a href="http://lethain.com/">Will Larson</a></h1>
+  </div>
+  <div id="contact">
+    <p id="email">email: <a href="mailto:lethain@gmail.com">lethain@gmail.com</a></p>
+    <p id="phone">cell: (828) 275-9714</p>
+    <p id="twitter">twitter: <a href="http://twitter.com/lethain">Lethain</a></p>
+  </div>
+  <div id="address">
+    <p id="address_one">Cole Valley</p>
+    <p id="address_two">San Francisco, CA </p>
+    <p id="address_three">USA</p>
+  </div>
+</div>
+</body>
+</html>"""

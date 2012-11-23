@@ -173,7 +173,20 @@ title.
 
 A technique to properly extract this data would look like::
 
-    TODO: WRITE THIS EXAMPLE :-)
+    from extraction.techniques import Technique
+    from bs4 import BeautifulSoup
+    class LethainComTechnique(Technique):
+        def extract(self, html):
+            "Extract data from lethain.com."
+            soup = BeautifulSoup(html)
+            page_div = soup.find('div', class_='page')
+            text_div = soup.find('div', class_='text')
+            return { 'titles': [page_div.find('h2').string],
+                     'dates': [page_div.find('span', class_='date').string],
+                     'descriptions': [" ".join(text_div.find('p').strings)],
+                     'tags': [x.find('a').string for x in page_div.find_all('span', class_='tag')],
+                     'images': [x.attrs['src'] for x in text_div.find_all('img')],
+                     }
 
 To integrate your technique, take a look at the `Using Custom Techniques and Changing Technique Ordering`
 section above.
@@ -196,7 +209,8 @@ For a contrived example, we'll extract my address from `willarson.com <http://wi
 which is in no way a realistic example of extracting an address, and is
 only meant as an example of how to add a new type of extracted data.
 
-As such, to add support for extracting address should look like::
+As such, to add support for extracting address should look like (a fuller,
+commented version of this example is available in `extraction/examples/new_return_type.py`)::
 
     TODO: WRITE THIS EXAMPLE
     new Technique that returns addresses
@@ -206,8 +220,8 @@ As such, to add support for extracting address should look like::
 Usage would then look like::
 
     >>> import requests
-    >>> from my_module import MyExtractor
-    >>> extractor = MyExtractor()
+    >>> from extraction.examples.new_return_type import AddressExtractor
+    >>> extractor = AddressExtractor()
     >>> extracted = extractor.extract(requests.get("http://willarson.com/"))
     >>> extracted.address
     "Cole Valey San Francisco, CA USA"

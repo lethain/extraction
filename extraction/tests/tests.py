@@ -1,6 +1,7 @@
 import unittest
 import extraction
 from extraction.tests.data import *
+from extraction.examples.new_return_type import AddressExtractor
 
 class TestSequenceFunctions(unittest.TestCase):
     def setUp(self):
@@ -30,6 +31,16 @@ class TestSequenceFunctions(unittest.TestCase):
         self.assertEqual(len(extracted.images), 1)
         self.assertEquals(extracted.description.split(), "A month ago history reset with the second launch of Digg v1 , and memories are starting to fade since much of the Digg team joined SocialCode four months ago, so it seemed like a good time to describe the system and team architecture which ran and developed Digg.com from May 2010 until May 2012.".split())
 
+    def test_example_new_return_type(self):
+        "Test returning a non-standard datatype, in this case addresses."
+        self.extractor = AddressExtractor()
+        self.extractor.techniques = ["extraction.examples.new_return_type.AddressTechnique"]
+        extracted = self.extractor.extract(WILLARSON_COM_HTML)
+        self.assertEqual(extracted.address, "Cole Valley San Francisco, CA USA")
+        self.assertEqual(extracted.url, None)
+        self.assertEqual(extracted.title, None)
+        self.assertEqual(extracted.description, None)
+        self.assertEqual(extracted.image, None)
 
 
 if __name__ == '__main__':
