@@ -210,18 +210,39 @@ which is in no way a realistic example of extracting an address, and is
 only meant as an example of how to add a new type of extracted data.
 
 As such, to add support for extracting address should look like (a fuller,
-commented version of this example is available in `extraction/examples/new_return_type.py`)::
+commented version of this example is available in `extraction/examples/new_return_type.py`,
+I've written this as concisely as possible to fit into this doc more cleanly)::
 
-    TODO: WRITE THIS EXAMPLE
-    new Technique that returns addresses
-    new Extracted with property for addresses
-    new Extractor which uses the new Technique and new Extracted
+    from extraction.techniques import Technique
+    from extraction import Extractor, Extracted
+    from bs4 import BeautifulSoup
+
+    class AddressExtracted(Extracted):
+        def __init__(self, addresses=None, *args, **kwargs):
+            self.addresses = addresses or []
+            super(AddressExtracted, self).__init__(*args, **kwargs)
+
+        @property
+        def address(self):
+            return self.addresses[0] if self.addresses else None
+
+    class AddressExtractor(Extractor):
+        "Extractor which supports addresses as first-class data."
+        extracted_class = AddressExtracted
+        text_types = ["titles", "descriptions", "addresses"]
+
+    class AddressTechnique(Technique):
+        def extract(self, html):
+            "Extract address data from willarson.com."
+            soup = BeautifulSoup(html)
+            return {'addresses': [" ".join(soup.find('div', id='address').strings)]}
 
 Usage would then look like::
 
     >>> import requests
     >>> from extraction.examples.new_return_type import AddressExtractor
     >>> extractor = AddressExtractor()
+    >>> extractor.techniques = ["extraction.examples.new_return_type.AddressTechnique"]
     >>> extracted = extractor.extract(requests.get("http://willarson.com/"))
     >>> extracted.address
     "Cole Valey San Francisco, CA USA"
