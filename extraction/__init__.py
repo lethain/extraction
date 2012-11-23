@@ -74,6 +74,28 @@ class Extracted(object):
         # a technique returns additional types of data
         self._unexpected_values = kwargs
 
+    def __repr__(self):
+        "String representation of extracted results."
+        details = (("title", self.titles),
+                   ("url", self.urls),
+                   ("image", self.images),
+                   ("feed", self.feeds),
+                   ("description", self.descriptions),
+                   )
+
+        details_strs = []
+        max_shown = 50
+        for name, values, in details:
+            if values:
+                value = values[0]
+                count = len(values)
+                if count -1 > 0:
+                    details_strs.append("(%s: '%s', %s more)" % (name, value[:max_shown], count-1))
+                else:
+                    details_strs.append("(%s: '%s')" % (name, value[:max_shown]))
+
+        return "<%s: %s>" % (self.__class__.__name__, ", ".join(details_strs))
+
     @property
     def title(self):
         "Return the best title, if any."
