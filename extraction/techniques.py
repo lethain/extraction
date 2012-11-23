@@ -122,3 +122,45 @@ class FacebookOpengraphTags(Technique):
 
         return extracted
 
+
+class SemanticTags(Technique):
+    """
+    This technique relies on the basic tags themselves--for example,
+    all IMG tags include images, most H1 and H2 tags include titles,
+    and P tags often include text usable as descriptions.
+
+    This is a true last resort technique.
+    """
+    # list to support ordering of semantics, e.g. h1
+    # is higher quality than h2 and so on
+    # format is ("name of tag", "destination list", store_first_n)
+    extract_string = [('h1', 'titles', 3),
+                      ('h2', 'titles', 3),
+                      ('h3', 'titles', 1),
+                      ('p', 'descriptions', 5),
+                      ]
+    # format is ("name of tag", "destination list", "name of attribute" store_first_n)
+    extract_attr = [('img', 'images', 'src', 10)]
+
+    def extract(self, html):
+        "Extract data from Facebook Opengraph tags."
+        extracted = {}
+        soup = BeautifulSoup(html)
+        
+        for tag, dest, max_to_store in self.extract_string:
+            for found in soup.find_all(tag)[:max_to_store] or []:
+                if dest not in extracted:
+                    extracted[dest] = []
+                extracted[dest].append(" ".join(found.strings))
+        
+
+        for tag, dest, attribute, max_to_store in self.extract_attr:
+            for found in soup.find_all(tag)[:max_to_store] or []:
+                if attribute in found.attrs:
+                    if dest not in extracted:
+                        extracted[dest] = []
+                    extracted[dest].append(found[attribute])
+
+        return extracted
+    
+    

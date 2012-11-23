@@ -22,6 +22,13 @@ class TestSequenceFunctions(unittest.TestCase):
         # rewrites ../digg_v4/initial_org.png
         self.assertEqual(extracted.images[1], "http://lethain.com/digg_v4/initial_org.png")
 
+
+    def test_removing_duplicate_values(self):
+        "We shouldn't suggest the same extracted value multiple times."
+        extracted = self.extractor.extract(DUPLICATES_HTML)
+        self.assertEqual(extracted.titles, ["Hi"])
+        self.assertEqual(extracted.descriptions, ["This is awesome."])
+
     def test_default_techniques(self):
         """
         Test running the default techniques list with a simple page.
@@ -70,6 +77,16 @@ class TestSequenceFunctions(unittest.TestCase):
         self.assertEquals(extracted.description, "Will Larson's blog about programming and other things.")
         self.assertEqual(extracted.feed, "http://lethain.com/feeds/")
         self.assertEqual(extracted._unexpected_values['authors'], ["Will Larson"])
+
+    def test_technique_semantic_tags(self):
+        "Test extracting data from basic HTML tags like H1, H2, P, and IMG."
+        self.extractor.techniques = ["extraction.techniques.SemanticTags"]
+        extracted = self.extractor.extract(LETHAIN_COM_HTML)
+        self.assertEqual(extracted.title, "Irrational Exuberance")
+        self.assertEqual(extracted.url, None)
+        self.assertEqual(extracted.image, "/static/blog/digg_v4/initial_org.png")
+        self.assertEqual(len(extracted.images), 2)
+        self.assertEquals(extracted.description.split(), "A month ago history reset with the second launch of Digg v1 , and memories are starting to fade since much of the Digg team joined SocialCode four months ago, so it seemed like a good time to describe the system and team architecture which ran and developed Digg.com from May 2010 until May 2012.".split())
 
     def test_example_lethain_com_technique(self):
         "Test extracting data from lethain.com with a custom technique in extraction.examples."

@@ -141,6 +141,7 @@ class Extractor(object):
     "Extracts title, summary and image(s) from an HTML document."
     techniques = ["extraction.techniques.FacebookOpengraphTags",
                   "extraction.techniques.HeadTags",
+                  "extraction.techniques.SemanticTags",
                   ]
     extracted_class = Extracted
 

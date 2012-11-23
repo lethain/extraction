@@ -70,7 +70,6 @@ To rerank the techniques, remove techniques or add new techniques
 of your own, look at the `Using Extraction` section below.
 
 
-
 extraction.techniques.HeadTags
 ------------------------------
 
@@ -107,6 +106,16 @@ This technique uses Opengraph tags, which look like this::
     </head>
 
 as their source of data.
+
+
+extraction.techniques.SemanticTags
+----------------------------------
+
+This technique relies on the basic tags themselves--for example,
+all IMG tags include images, most H1 and H2 tags include titles,
+and P tags often include text usable as descriptions.
+
+This is a true last resort technique.
 
 
 Using Extraction

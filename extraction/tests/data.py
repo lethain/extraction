@@ -116,3 +116,17 @@ WILLARSON_COM_HTML = """
 </div>
 </body>
 </html>"""
+
+DUPLICATES_HTML = """
+<html>
+  <head>
+    <title>Hi</title>
+    <meta name="description" content="This is awesome." />
+  </head>
+  <body>
+    <h1>Hi</h1>
+    <p>This is awesome.</p>
+    <h2>Hi</h2>
+    <p>This is awesome.</p>
+  </body>
+</html>"""
