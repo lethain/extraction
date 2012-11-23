@@ -113,7 +113,23 @@ extraction.techniques.SemanticTags
 
 This technique relies on the basic tags themselves--for example,
 all IMG tags include images, most H1 and H2 tags include titles,
-and P tags often include text usable as descriptions.
+and P tags often include text usable as descriptions::
+
+    <html>
+      <body>
+        <h1>This will be extracted as a title.</h1>
+        <h2>So will this, but after all H1s.</h2>
+        <img src="this_will_be_extracted_as_an_img.png">
+        <p>And this as a description.</p>
+        <p>This as another possible description.</p>
+        <p>This as a third possible description.</p>
+      </body>
+    </html>
+
+There is a limit, defined within `SemanticTags` of how many
+tags of a given type will be consumed, and is usually 3-5,
+with the exception of images, where it is 10 (as this is
+actually a valid way to detect images, unlike the others).
 
 This is a true last resort technique.
 
