@@ -76,7 +76,7 @@ extraction.techniques.HeadTags
 
 Every webpage's head tag contains has a title tag, and many also
 include additional data like descriptions, RSS feeds and such.
-This technique parses data that looks like:
+This technique parses data that looks like::
 
     <head>
         <meta name="description" content="Will Larson&#39;s blog about programming and other things." />
