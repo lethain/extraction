@@ -31,7 +31,9 @@ An extremely simple example of using `extraction` is::
 
 Note that `source_url` is optional in extract, but is recommended
 as it makes it possible to rewrite relative urls and image urls
-into absolute paths. It is not used for fetching data.
+into absolute paths. `source_url` is not used for fetching data,
+but can be used for targetting extraction techniques to the correct
+domain.
 
 More details usage examples, including how to add your own
 extraction mechanisms, are beneath the installation section.
