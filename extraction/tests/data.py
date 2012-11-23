@@ -78,6 +78,7 @@ we built out.</p>
 the company's size, how the teams were organized, and how the structure was impacted
 by a series of layoffs and subsequent hiring.</p>
     <p><img alt="The starting team architecture." src="/static/blog/digg_v4/initial_org.png" /></p>
+    <p><img alt="The starting team architecture2." src="../digg_v4/initial_org.png" /></p>
     <p>For focus I'm not covering the Sales, Finance, Ad Management, Design,
 HR, BD teams and such; they were important pieces of the company and how
 it functioned, just not central to this particular story.</p>

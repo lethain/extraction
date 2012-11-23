@@ -7,7 +7,7 @@ setup(
     author_email='lethain@gmail.com',
     packages=['extraction', 'extraction.tests', 'extraction.examples'],
     scripts=['bin/extraction.py'],
-    url='http://pypi.python.org/pypi/extraction//',
+    url='http://pypi.python.org/pypi/extraction/',
     license='LICENSE.txt',
     description='Extract basic info from HTML webpages.',
     long_description=open('README.txt').read(),

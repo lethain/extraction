@@ -8,6 +8,7 @@ Retrieve and extract data from HTML documents.
     >>> resp = extr.extract(html)
     >>> print resp
 """
+import urlparse
 import importlib
 
 class Extracted(object):
@@ -143,10 +144,19 @@ class Extractor(object):
         "Cleanup text values like titles or descriptions."
         return " ".join(value.split())
 
-    def cleanup_url(self, value, source_url=None):
-        "Transform relative URLs into absolute URLs if possible."
-        # TODO: rewrite images/urls if source_url is specified
-        return value
+    def cleanup_url(self, value_url, source_url=None):
+        """
+        Transform relative URLs into absolute URLs if possible.
+
+        If the value_url is already absolute, or we don't know the
+        source_url, then return the existing value. If the value_url is
+        relative, and we know the source_url, then try to rewrite it.
+        """
+        value = urlparse.urlparse(value_url)
+        if value.netloc or not source_url:
+            return value_url
+        else:
+            return urlparse.urljoin(source_url, value_url)
 
     def cleanup(self, results, html, source_url=None):
         """
@@ -160,7 +170,7 @@ class Extractor(object):
             if data_type in self.text_types:
                 data_values = [self.cleanup_text(x) for x in data_values]
             if data_type in self.url_types:
-                data_values = [self.cleanup_url(x) for x in data_values]
+                data_values = [self.cleanup_url(x, source_url=source_url) for x in data_values]
 
             cleaned_results[data_type] = data_values
         return cleaned_results
