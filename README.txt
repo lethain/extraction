@@ -55,7 +55,7 @@ If you want to develop against extraction, you can install from GitHub::
 
 Then you can run the tests::
 
-    python tests.py
+    python tests/tests.py
 
 All of which should pass in a sane installation.
 

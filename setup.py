@@ -5,7 +5,7 @@ setup(
     version='0.1.0',
     author='Will Larson',
     author_email='lethain@gmail.com',
-    packages=['extraction', 'extraction.examples'],
+    packages=['extraction', 'extraction.tests', 'extraction.examples'],
     scripts=['bin/extraction.py'],
     url='http://pypi.python.org/pypi/extraction//',
     license='LICENSE.txt',
