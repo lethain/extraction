@@ -10,5 +10,5 @@ setup(
     url='http://pypi.python.org/pypi/extraction/',
     license='LICENSE.txt',
     description='Extract basic info from HTML webpages.',
-    long_description=open('README.txt').read(),
+    long_description=open('README.rst').read(),
 )

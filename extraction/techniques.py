@@ -19,6 +19,61 @@ class Technique(object):
                 'urls': [],
                 }
 
+class HeadTags(Technique):
+    """
+    Extract info from standard HTML metatags like title, for example:
+
+        <head>
+            <meta http-equiv="content-type" content="text/html; charset=UTF-8" />
+            <meta name="author" content="Will Larson" />
+            <meta name="description" content="Will Larson&#39;s blog about programming and other things." />
+            <meta name="keywords" content="Blog Will Larson Programming Life" />
+            <link rel="alternate" type="application/rss+xml" title="Page Feed" href="/feeds/" />
+            <link rel="canonical" href="http://lethain.com/digg-v4-architecture-process/">
+            <title>Digg v4&#39;s Architecture and Development Processes - Irrational Exuberance</title>
+        </head>
+
+    This is usually a last-resort, low quality, but reliable parsing mechanism.
+    """
+    meta_name_map = {
+        "description": "descriptions",
+        "author": "authors",
+        }
+
+    def extract(self, html):
+        "Extract data from meta, link and title tags within the head tag."
+        extracted = {}
+        soup = BeautifulSoup(html)
+        # extract data from title tag
+        title_tag = soup.find('title')
+        if title_tag:
+            extracted['titles'] = [title_tag.string]
+
+        # extract data from meta tags
+        for meta_tag in soup.find_all('meta'):
+            if 'name' in meta_tag.attrs and 'content' in meta_tag.attrs:
+                name = meta_tag['name']
+                if name in self.meta_name_map:
+                    name_dest = self.meta_name_map[name]
+                    if name_dest not in extracted:
+                        extracted[name_dest] = []
+                    extracted[name_dest].append(meta_tag.attrs['content'])
+
+        # extract data from link tags
+        for link_tag in soup.find_all('link'):
+            if 'rel' in link_tag.attrs:
+                if ('alternate' in link_tag['rel'] or link_tag['rel'] == 'alternate') and 'type' in link_tag.attrs and link_tag['type'] == "application/rss+xml" and 'href' in link_tag.attrs:
+                    if 'feeds' not in extracted:
+                        extracted['feeds'] = []
+                    extracted['feeds'].append(link_tag['href'])
+                elif ('canonical' in link_tag['rel'] or link_tag['rel'] == 'canonical') and 'href' in link_tag.attrs:
+                    if 'urls' not in extracted:
+                        extracted['urls'] = []
+                    extracted['urls'].append(link_tag['href'])
+                    
+        return extracted
+
+    
 
 class FacebookOpengraphTags(Technique):
     """

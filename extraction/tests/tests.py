@@ -22,7 +22,33 @@ class TestSequenceFunctions(unittest.TestCase):
         # rewrites ../digg_v4/initial_org.png
         self.assertEqual(extracted.images[1], "http://lethain.com/digg_v4/initial_org.png")
 
-    def test_parse_facebook(self):
+    def test_default_techniques(self):
+        """
+        Test running the default techniques list with a simple page.
+
+        This is a bit of a high-level test to ensure that the default
+        techniques aren't completely broken.
+        """
+        extracted = self.extractor.extract(LETHAIN_COM_HTML, source_url="http://lethain.com/digg-v4-architecture-process/")
+        self.assertTrue(extracted.titles)
+        self.assertTrue(extracted.urls)
+        self.assertTrue(extracted.descriptions)
+        self.assertTrue(extracted.feeds)
+
+    def test_default_techniques_on_empty_page(self):
+        """
+        Test running the default techniques list against an empty HTML document.
+
+        This is useful for ensuring the defaut techniques fail sanely when they
+        encounter blank/empty documents.
+        """
+        extracted = self.extractor.extract("")
+        self.assertFalse(extracted.titles)
+        self.assertFalse(extracted.urls)
+        self.assertFalse(extracted.descriptions)
+        self.assertFalse(extracted.feeds)
+
+    def test_technique_facebook_meta_tags(self):
         # make sure the shuffled sequence does not lose any elements
         self.extractor.techniques = ["extraction.techniques.FacebookOpengraphTags"]
         extracted = self.extractor.extract(FACEBOOK_HTML)
@@ -33,6 +59,17 @@ class TestSequenceFunctions(unittest.TestCase):
         self.assertEqual(extracted.images, ["http://ia.media-imdb.com/rock.jpg"])
         self.assertTrue(extracted.description, "A group of U.S. Marines, under command of a renegade general, take over Alcatraz and threaten San Francisco Bay with biological weapons.")
         self.assertEqual(len(extracted.descriptions), 1)
+
+    def test_technique_head_tags(self):
+        "Test extracting page information from HTML head tags (meta, title, ...)."
+        self.extractor.techniques = ["extraction.techniques.HeadTags"]
+        extracted = self.extractor.extract(LETHAIN_COM_HTML, source_url="http://lethain.com/digg-v4-architecture-process/")
+        self.assertEqual(extracted.title, "Digg v4's Architecture and Development Processes - Irrational Exuberance")
+        self.assertEqual(extracted.url, "http://lethain.com/digg-v4-architecture-process/")
+        self.assertEqual(extracted.image, None)
+        self.assertEquals(extracted.description, "Will Larson's blog about programming and other things.")
+        self.assertEqual(extracted.feed, "http://lethain.com/feeds/")
+        self.assertEqual(extracted._unexpected_values['authors'], ["Will Larson"])
 
     def test_example_lethain_com_technique(self):
         "Test extracting data from lethain.com with a custom technique in extraction.examples."

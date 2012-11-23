@@ -14,7 +14,7 @@ import importlib
 class Extracted(object):
     "Contains data extracted from a page."
 
-    def __init__(self, titles=None, descriptions=None, images=None, urls=None, **kwargs):
+    def __init__(self, titles=None, descriptions=None, images=None, urls=None, feeds=None, **kwargs):
         """
         Initialize Extracted instance.
 
@@ -55,16 +55,20 @@ class Extracted(object):
             images = []
         if urls is None:
             urls = []
+        if feeds is None:
+           feeds = []
 
         assert type(titles) in (list, tuple), "titles must be a list or tuple"
         assert type(descriptions) in (list, tuple), "descriptions must be a list or tuple"
         assert type(images) in (list, tuple), "images must be a list or tuple"
         assert type(urls) in (list, tuple), "urls must be a list or tuple"
+        assert type(feeds) in (list, tuple), "urls must be a list or tuple"
 
         self.titles = titles
         self.descriptions = descriptions
         self.images = images
         self.urls = urls
+        self.feeds = feeds
 
         # stores unexpected and uncaptured values to avoid crashing if
         # a technique returns additional types of data
@@ -102,15 +106,25 @@ class Extracted(object):
         else:
             return None
 
+    @property
+    def feed(self):
+        "Return the best feed, if any."
+        if self.feeds:
+            return self.feeds[0]
+        else:
+            return None
+
 
 class Extractor(object):
     "Extracts title, summary and image(s) from an HTML document."
-    techniques = ["extraction.techniques.FacebookOpengraphTags"]
+    techniques = ["extraction.techniques.FacebookOpengraphTags",
+                  "extraction.techniques.HeadTags",
+                  ]
     extracted_class = Extracted
 
     # for determining which cleanup mechanisms to apply
     text_types = ["titles", "descriptions"]
-    url_types = ["images", "urls"]
+    url_types = ["images", "urls", "feeds"]
 
     def __init__(self, techniques=None, extracted_class=None, *args, **kwargs):
         "Extractor."

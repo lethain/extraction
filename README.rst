@@ -70,6 +70,26 @@ To rerank the techniques, remove techniques or add new techniques
 of your own, look at the `Using Extraction` section below.
 
 
+
+extraction.techniques.HeadTags
+------------------------------
+
+Every webpage's head tag contains has a title tag, and many also
+include additional data like descriptions, RSS feeds and such.
+This technique parses data that looks like:
+
+    <head>
+        <meta name="description" content="Will Larson&#39;s blog about programming and other things." />
+        <link rel="alternate" type="application/rss+xml" title="Page Feed" href="/feeds/" />
+        <link rel="canonical" href="http://lethain.com/digg-v4-architecture-process/">
+        <title>Digg v4&#39;s Architecture and Development Processes - Irrational Exuberance</title>
+    </head>
+
+While the head tag is authoritative source of canonical URLs and RSS,
+it's often very hit or miss for titles, descriptions and such.
+At worst, it's better than nothing.
+
+
 extraction.techniques.FacebookOpengraphTags
 -------------------------------------------
 
@@ -134,6 +154,7 @@ The default ordering of techniques is within the  extraction.Extractor's
 `techniques` class variable, and is::
 
     extraction.techniques.FacebookOpengraphTags
+    extraction.techniques.HeadTags
 
 You can modify the order and inclusion of techniques in three ways.
 First, you can modify it by passing in a list of techniques to the
