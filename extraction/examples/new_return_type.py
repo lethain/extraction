@@ -27,13 +27,7 @@ class AddressExtracted(Extracted):
 class AddressExtractor(Extractor):
     "Extractor which supports addresses as first-class data."
     extracted_class = AddressExtracted
-
-    def cleanup(self, results, html, source_url=None):
-        "Cleanup addresses."
-        if "addresses" in results:
-            addresses = results["addresses"]
-            results["addresses"] = [self.cleanup_text(x) for x in addresses]
-        return super(AddressExtractor, self).cleanup(results, html, source_url=source_url)
+    text_types = ["titles", "descriptions", "addresses"]
 
 
 class AddressTechnique(Technique):

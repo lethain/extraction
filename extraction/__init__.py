@@ -107,6 +107,10 @@ class Extractor(object):
     techniques = ["extraction.techniques.FacebookOpengraphTags"]
     extracted_class = Extracted
 
+    # for determining which cleanup mechanisms to apply
+    text_types = ["titles", "descriptions"]
+    url_types = ["images", "urls"]
+
     def __init__(self, techniques=None, extracted_class=None, *args, **kwargs):
         "Extractor."
         if techniques:
@@ -139,6 +143,11 @@ class Extractor(object):
         "Cleanup text values like titles or descriptions."
         return " ".join(value.split())
 
+    def cleanup_url(self, value, source_url=None):
+        "Transform relative URLs into absolute URLs if possible."
+        # TODO: rewrite images/urls if source_url is specified
+        return value
+
     def cleanup(self, results, html, source_url=None):
         """
         Allows standardizing extracted contents, at this time:
@@ -146,12 +155,13 @@ class Extractor(object):
         1. removes multiple whitespaces
         2. rewrite relative URLs as absolute URLs if source_url is specified
         """
-
-        # TODO: rewrite images/urls if source_url is specified
         cleaned_results = {}
         for data_type, data_values in results.items():
-            if data_type in ('descriptions','titles'):
+            if data_type in self.text_types:
                 data_values = [self.cleanup_text(x) for x in data_values]
+            if data_type in self.url_types:
+                data_values = [self.cleanup_url(x) for x in data_values]
+
             cleaned_results[data_type] = data_values
         return cleaned_results
 
