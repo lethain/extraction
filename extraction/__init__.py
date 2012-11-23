@@ -201,6 +201,7 @@ class Extractor(object):
 
         1. removes multiple whitespaces
         2. rewrite relative URLs as absolute URLs if source_url is specified
+        3. filter out duplicate values
         """
         cleaned_results = {}
         for data_type, data_values in results.items():
@@ -209,7 +210,14 @@ class Extractor(object):
             if data_type in self.url_types:
                 data_values = [self.cleanup_url(x, source_url=source_url) for x in data_values]
 
-            cleaned_results[data_type] = data_values
+            # filter out duplicate values
+            unique_values = []
+            for data_value in data_values:
+                if data_value not in unique_values:
+                    unique_values.append(data_value)
+
+            cleaned_results[data_type] = unique_values
+        
         return cleaned_results
 
     def extract(self, html, source_url=None):
