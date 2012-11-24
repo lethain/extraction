@@ -268,7 +268,7 @@ the behavior of Techniques in a couple of ways.
 
 First, you can simply subclass the Technique with the specific
 behavior you want, perhaps pulling the data from Django settings
-or what not.
+or what not::
 
     class MyTechnique(Technique):
         def __init__(self, *args, **kwargs):
