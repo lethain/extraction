@@ -1,1 +1,3 @@
-v0.1, 11/17/2012 -- Initial release.
+v0.1.2, 11/23/2012 -- Update setup.py dependencies for saner installation, again.
+v0.1.1, 11/23/2012 -- Update setup.py dependencies for saner installation.
+v0.1,   11/17/2012 -- Initial release.
