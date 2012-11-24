@@ -31,6 +31,7 @@ An extremely simple example of using `extraction` is::
     >>> extracted.title
     >>> "Social Hierarchies in Engineering Organizations - Irrational Exuberance"
     >>> print extracted.title, extracted.description, extracted.image, extracted.url
+    >>> print extracted.titles, extracted.descriptions, extracted.images, extracted.urls
 
 Note that `source_url` is optional in extract, but is recommended
 as it makes it possible to rewrite relative urls and image urls
@@ -189,6 +190,33 @@ The simplest possible example is the "Hello World" example from above::
     >>> extracted.title
     >>> "Social Hierarchies in Engineering Organizations - Irrational Exuberance"
     >>> print extracted.title, extracted.description, extracted.image, extracted.url
+
+You can get the best title, description and such out of an `Extracted`
+instance (which are returned by `Extractor.extract`) by::
+
+    >>> print extracted.title
+    >>> print extracted.description
+    >>> print extracted.url
+    >>> print extracted.image
+    >>> print extracted.feed
+
+You can get the full list of extracted values using the plural versions::
+
+    >>> print extracted.titles
+    >>> print extracted.descriptions
+    >>> print extracted.urls
+    >>> print extracted.images
+    >>> print extracted.feeds
+
+If you're looking for data which is being extracted but doesn't fall into
+one of those categories (perhaps using a custom technique), then
+take a look at the `Extracted._unexpected_values` dictionary::
+
+    >>> print extracted._unexpected_values
+
+Any type of metadata which isn't anticipated is stored there
+(look at `Subclassing Extracted to Extract New Types of Data`
+if this is something you're running into frequently).
 
 
 Using Custom Techniques and Changing Technique Ordering
