@@ -14,6 +14,9 @@ by a different tool.
 Developed against Python 2.7, but should also work with Python 2.6+ if
 you install the importlib requirement.
 
+See on `Github <https://github.com/lethain/extraction>`, or on
+`PyPi <http://pypi.python.org/pypi/extraction/0.1.0>`.
+
 
 Hello World Usage
 =================
