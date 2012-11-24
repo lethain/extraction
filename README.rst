@@ -208,7 +208,9 @@ The default ordering of techniques is within the  extraction.Extractor's
 `techniques` class variable, and is::
 
     extraction.techniques.FacebookOpengraphTags
+    extraction.techniques.HTML5SemanticTags
     extraction.techniques.HeadTags
+    extraction.techniques.SemanticTags
 
 You can modify the order and inclusion of techniques in three ways.
 First, you can modify it by passing in a list of techniques to the
