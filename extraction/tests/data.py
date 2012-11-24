@@ -130,3 +130,19 @@ DUPLICATES_HTML = """
     <p>This is awesome.</p>
   </body>
 </html>"""
+
+HTML5_HTML = """
+        <html>
+          <body>
+            <h1>This is not a title to HTML5SemanticTags</h1>
+            <article>
+              <h1>This is a title</h1>
+              <p>This is a description.</p>
+              <p>This is not a description.</p>
+            </article>
+            <video>
+              <source src="this_is_a_video.mp4">
+            </video>
+          </body>
+        </html>
+"""

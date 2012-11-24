@@ -108,12 +108,41 @@ This technique uses Opengraph tags, which look like this::
 as their source of data.
 
 
+extraction.techniques.HTML5SemanticTags
+---------------------------------------
+
+The HTML5 `article` tag, and also the `video` tag give us some useful
+hints for extracting page information for the sites which happen to
+utilize these tags.
+
+This technique will extract information from pages formed like::
+
+    <html>
+      <body>
+        <h1>This is not a title to HTML5SemanticTags</h1>
+        <article>
+          <h1>This is a title</h1>
+          <p>This is a description.</p>
+          <p>This is not a description.</p>
+        </article>
+        <video>
+          <source src="this_is_a_video.mp4">
+        </video>
+      </body>
+    </html>
+
+Note that `HTML5SemanticTags` is intentionally much more conservative than
+`SemanticTags`, as it provides high quality information in the small number
+of cases where it hits, and otherwise expects `SemanticTags` to run sweep
+behind it for the lower quality, more abundant hits it discovers.
+
+
 extraction.techniques.SemanticTags
 ----------------------------------
 
 This technique relies on the basic tags themselves--for example,
-all IMG tags include images, most H1 and H2 tags include titles,
-and P tags often include text usable as descriptions::
+all `img` tags include images, most `h1` and `h2` tags include titles,
+and `p` tags often include text usable as descriptions::
 
     <html>
       <body>

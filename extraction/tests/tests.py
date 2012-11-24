@@ -88,6 +88,14 @@ class TestSequenceFunctions(unittest.TestCase):
         self.assertEqual(len(extracted.images), 2)
         self.assertEquals(extracted.description.split(), "A month ago history reset with the second launch of Digg v1 , and memories are starting to fade since much of the Digg team joined SocialCode four months ago, so it seemed like a good time to describe the system and team architecture which ran and developed Digg.com from May 2010 until May 2012.".split())
 
+    def test_technique_html_semantic_tags(self):
+        "Test extracting data from an HTML5 page."
+        self.extractor.techniques = ["extraction.techniques.HTML5SemanticTags"]
+        extracted = self.extractor.extract(HTML5_HTML)
+        self.assertEqual(extracted.title, 'This is a title')
+        self.assertEqual(extracted.description, 'This is a description.')
+        self.assertEqual(extracted._unexpected_values['videos'], ["this_is_a_video.mp4"])
+
     def test_example_lethain_com_technique(self):
         "Test extracting data from lethain.com with a custom technique in extraction.examples."
         self.extractor.techniques = ["extraction.examples.custom_technique.LethainComTechnique"]

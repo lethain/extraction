@@ -123,6 +123,55 @@ class FacebookOpengraphTags(Technique):
         return extracted
 
 
+class HTML5SemanticTags(Technique):
+    """
+    The HTML5 `article` tag, and also the `video` tag give us some useful
+    hints for extracting page information for the sites which happen to
+    utilize these tags.
+    
+    This technique will extract information from pages formed like::
+
+        <html>
+          <body>
+            <h1>This is not a title to HTML5SemanticTags</h1>
+            <article>
+              <h1>This is a title</h1>
+              <p>This is a description.</p>
+              <p>This is not a description.</p>
+            </article>
+            <video>
+              <source src="this_is_a_video.mp4">
+            </video>
+          </body>
+        </html>
+
+    Note that `HTML5SemanticTags` is intentionally much more conservative than
+    `SemanticTags`, as it provides high quality information in the small number
+    of cases where it hits, and otherwise expects `SemanticTags` to run sweep
+    behind it for the lower quality, more abundant hits it discovers.
+    """
+    def extract(self, html):
+        "Extract data from Facebook Opengraph tags."
+        titles = []
+        descriptions = []
+        videos = []
+        soup = BeautifulSoup(html)
+        for article in soup.find_all('article') or []:
+            title = article.find('h1')
+            if title:
+                titles.append(" ".join(title.strings))
+            desc = article.find('p')
+            if desc:
+                descriptions.append(" ".join(desc.strings))
+
+        for video in soup.find_all('video') or []:
+            for source in video.find_all('source') or []:
+                if 'src' in source.attrs:
+                    videos.append(source['src'])
+
+        return {'titles':titles, 'descriptions':descriptions, 'videos':videos}
+
+
 class SemanticTags(Technique):
     """
     This technique relies on the basic tags themselves--for example,
