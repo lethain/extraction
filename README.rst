@@ -66,107 +66,6 @@ Then you can run the tests::
 All of which should pass in a sane installation.
 
 
-Extraction Techniques
-=====================
-
-This section lists the current techniques used by extraction.
-To rerank the techniques, remove techniques or add new techniques
-of your own, look at the `Using Extraction` section below.
-
-
-extraction.techniques.HeadTags
-------------------------------
-
-Every webpage's head tag contains has a title tag, and many also
-include additional data like descriptions, RSS feeds and such.
-This technique parses data that looks like::
-
-    <head>
-        <meta name="description" content="Will Larson&#39;s blog about programming and other things." />
-        <link rel="alternate" type="application/rss+xml" title="Page Feed" href="/feeds/" />
-        <link rel="canonical" href="http://lethain.com/digg-v4-architecture-process/">
-        <title>Digg v4&#39;s Architecture and Development Processes - Irrational Exuberance</title>
-    </head>
-
-While the head tag is authoritative source of canonical URLs and RSS,
-it's often very hit or miss for titles, descriptions and such.
-At worst, it's better than nothing.
-
-
-extraction.techniques.FacebookOpengraphTags
--------------------------------------------
-
-For better or for worse, the highest quality source of page data is usually
-the `Facebook Opengraph meta tags <https://developers.facebook.com/docs/opengraphprotocol/>`.
-This technique uses Opengraph tags, which look like this::
-
-    <head>
-        ...
-        <meta property="og:title" content="Something"/>
-        <meta property="og:url" content="http://www.example.org/something//"/>
-        <meta property="og:image" content="http://images.example.org/a/"/>
-        <meta property="og:description" content="Something amazing."/>
-        ...
-    </head>
-
-as their source of data.
-
-
-extraction.techniques.HTML5SemanticTags
----------------------------------------
-
-The HTML5 `article` tag, and also the `video` tag give us some useful
-hints for extracting page information for the sites which happen to
-utilize these tags.
-
-This technique will extract information from pages formed like::
-
-    <html>
-      <body>
-        <h1>This is not a title to HTML5SemanticTags</h1>
-        <article>
-          <h1>This is a title</h1>
-          <p>This is a description.</p>
-          <p>This is not a description.</p>
-        </article>
-        <video>
-          <source src="this_is_a_video.mp4">
-        </video>
-      </body>
-    </html>
-
-Note that `HTML5SemanticTags` is intentionally much more conservative than
-`SemanticTags`, as it provides high quality information in the small number
-of cases where it hits, and otherwise expects `SemanticTags` to run sweep
-behind it for the lower quality, more abundant hits it discovers.
-
-
-extraction.techniques.SemanticTags
-----------------------------------
-
-This technique relies on the basic tags themselves--for example,
-all `img` tags include images, most `h1` and `h2` tags include titles,
-and `p` tags often include text usable as descriptions::
-
-    <html>
-      <body>
-        <h1>This will be extracted as a title.</h1>
-        <h2>So will this, but after all H1s.</h2>
-        <img src="this_will_be_extracted_as_an_img.png">
-        <p>And this as a description.</p>
-        <p>This as another possible description.</p>
-        <p>This as a third possible description.</p>
-      </body>
-    </html>
-
-There is a limit, defined within `SemanticTags` of how many
-tags of a given type will be consumed, and is usually 3-5,
-with the exception of images, where it is 10 (as this is
-actually a valid way to detect images, unlike the others).
-
-This is a true last resort technique.
-
-
 Using Extraction
 ================
 
@@ -404,6 +303,107 @@ extraction.Extractor subclass::
 
 Between these two techniques, it should be feasible to get the
 customization of behavior you need.
+
+
+Extraction Techniques
+=====================
+
+This section lists the current techniques used by extraction.
+To rerank the techniques, remove techniques or add new techniques
+of your own, look at the `Using Extraction` section below.
+
+
+extraction.techniques.HeadTags
+------------------------------
+
+Every webpage's head tag contains has a title tag, and many also
+include additional data like descriptions, RSS feeds and such.
+This technique parses data that looks like::
+
+    <head>
+        <meta name="description" content="Will Larson&#39;s blog about programming and other things." />
+        <link rel="alternate" type="application/rss+xml" title="Page Feed" href="/feeds/" />
+        <link rel="canonical" href="http://lethain.com/digg-v4-architecture-process/">
+        <title>Digg v4&#39;s Architecture and Development Processes - Irrational Exuberance</title>
+    </head>
+
+While the head tag is authoritative source of canonical URLs and RSS,
+it's often very hit or miss for titles, descriptions and such.
+At worst, it's better than nothing.
+
+
+extraction.techniques.FacebookOpengraphTags
+-------------------------------------------
+
+For better or for worse, the highest quality source of page data is usually
+the `Facebook Opengraph meta tags <https://developers.facebook.com/docs/opengraphprotocol/>`.
+This technique uses Opengraph tags, which look like this::
+
+    <head>
+        ...
+        <meta property="og:title" content="Something"/>
+        <meta property="og:url" content="http://www.example.org/something//"/>
+        <meta property="og:image" content="http://images.example.org/a/"/>
+        <meta property="og:description" content="Something amazing."/>
+        ...
+    </head>
+
+as their source of data.
+
+
+extraction.techniques.HTML5SemanticTags
+---------------------------------------
+
+The HTML5 `article` tag, and also the `video` tag give us some useful
+hints for extracting page information for the sites which happen to
+utilize these tags.
+
+This technique will extract information from pages formed like::
+
+    <html>
+      <body>
+        <h1>This is not a title to HTML5SemanticTags</h1>
+        <article>
+          <h1>This is a title</h1>
+          <p>This is a description.</p>
+          <p>This is not a description.</p>
+        </article>
+        <video>
+          <source src="this_is_a_video.mp4">
+        </video>
+      </body>
+    </html>
+
+Note that `HTML5SemanticTags` is intentionally much more conservative than
+`SemanticTags`, as it provides high quality information in the small number
+of cases where it hits, and otherwise expects `SemanticTags` to run sweep
+behind it for the lower quality, more abundant hits it discovers.
+
+
+extraction.techniques.SemanticTags
+----------------------------------
+
+This technique relies on the basic tags themselves--for example,
+all `img` tags include images, most `h1` and `h2` tags include titles,
+and `p` tags often include text usable as descriptions::
+
+    <html>
+      <body>
+        <h1>This will be extracted as a title.</h1>
+        <h2>So will this, but after all H1s.</h2>
+        <img src="this_will_be_extracted_as_an_img.png">
+        <p>And this as a description.</p>
+        <p>This as another possible description.</p>
+        <p>This as a third possible description.</p>
+      </body>
+    </html>
+
+There is a limit, defined within `SemanticTags` of how many
+tags of a given type will be consumed, and is usually 3-5,
+with the exception of images, where it is 10 (as this is
+actually a valid way to detect images, unlike the others).
+
+This is a true last resort technique.
 
 
 Implementation Details
