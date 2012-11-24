@@ -1,3 +1,0 @@
-import extraction
-
-print "hi"
