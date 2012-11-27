@@ -14,8 +14,8 @@ by a different tool.
 Developed against Python 2.7, but should also work with Python 2.6+ if
 you install the importlib requirement.
 
-See on `Github <https://github.com/lethain/extraction>`, or on
-`PyPi <http://pypi.python.org/pypi/extraction/0.1.0>`.
+See on `Github <https://github.com/lethain/extraction>`_, or on
+`PyPi <http://pypi.python.org/pypi/extraction/0.1.0>`_.
 
 
 Hello World Usage
@@ -50,10 +50,10 @@ The simplest way to install Extraction is via PyPi::
 
     pip install extraction
 
-You'll also have to install a parser for `BeautifulSoup4 <http://www.crummy.com/software/BeautifulSoup/>`,
-and while ``extraction`` already pulls down [html5lib](http://code.google.com/p/html5lib/)
-through it's requirements, I really recommend installing `lxml <http://lxml.de/>` as well,
-because there are some extremely gnarly issues with ``html5lib``
+You'll also have to install a parser for `BeautifulSoup4 <http://www.crummy.com/software/BeautifulSoup/>`_,
+and while ``extraction`` already pulls down `html5lib <http://code.google.com/p/html5lib/>`_
+through it's requirements, I really recommend installing `lxml <http://lxml.de/>`_ as well,
+because there are some extremely gnarly issues with `html5lib`
 failing to parse XHTML pages (for example, PyPi fails to parse entirely
 with html5lib::
 
@@ -62,7 +62,7 @@ with html5lib::
     >>> bs4.BeautifulSoup(text, ["lxml"]).find_all("title")
     [<title>extraction 0.1.3 : Python Package Index</title>]
 
-You should be able to install `lxml <http://lxml.de/>` via pip::
+You should be able to install `lxml <http://lxml.de/>`_ via pip::
 
     pip install lxml
 
@@ -192,7 +192,7 @@ It may be that you're frequently parsing a given website and
 aren't impressed with how the default extraction techniques are
 performing. In that case, consider writng your own technique.
 
-Let's take for example a blog entry at `lethain.com <http://lethain.com/social-hierarchies-in-engineering-organizations/>`,
+Let's take for example a blog entry at `lethain.com <http://lethain.com/social-hierarchies-in-engineering-organizations/>`_,
 which uses the `H1` tag to represent the overall blogs title,
 and always uses the first `H2` tag in `DIV.page` for its actual
 title.
@@ -231,7 +231,7 @@ returned by `extract`, which will be available in the `Extracted()._unexpected_v
 dictionary. In this way you could fairly easily add support for extracting
 addresses or whatnot.
 
-For a contrived example, we'll extract my address from `willarson.com <http://willarson.com/>`,
+For a contrived example, we'll extract my address from `willarson.com <http://willarson.com/>`_,
 which is in no way a realistic example of extracting an address, and is
 only meant as an example of how to add a new type of extracted data.
 
@@ -353,7 +353,7 @@ extraction.techniques.FacebookOpengraphTags
 -------------------------------------------
 
 For better or for worse, the highest quality source of page data is usually
-the `Facebook Opengraph meta tags <https://developers.facebook.com/docs/opengraphprotocol/>`.
+the `Facebook Opengraph meta tags <https://developers.facebook.com/docs/opengraphprotocol/>`_.
 This technique uses Opengraph tags, which look like this::
 
     <head>
