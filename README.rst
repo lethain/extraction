@@ -50,7 +50,24 @@ The simplest way to install Extraction is via PyPi::
 
     pip install extraction
 
-If you want to develop against extraction, you can install from GitHub::
+You'll also have to install a parser for `BeautifulSoup4 <http://www.crummy.com/software/BeautifulSoup/>`,
+and while ``extraction`` already pulls down [html5lib](http://code.google.com/p/html5lib/)
+through it's requirements, I really recommend installing `lxml <http://lxml.de/>` as well,
+because there are some extremely gnarly issues with ``html5lib``
+failing to parse XHTML pages (for example, PyPi fails to parse entirely
+with html5lib::
+
+    >>> bs4.BeautifulSoup(text, ["html5lib"]).find_all("title")
+    []
+    >>> bs4.BeautifulSoup(text, ["lxml"]).find_all("title")
+    [<title>extraction 0.1.3 : Python Package Index</title>]
+
+You should be able to install `lxml <http://lxml.de/>` via pip::
+
+    pip install lxml
+
+If you want to develop extraction, then after installing `lxml`,
+you can install from GitHub::
 
     git clone
     cd extraction
