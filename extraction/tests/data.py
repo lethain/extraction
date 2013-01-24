@@ -146,3 +146,15 @@ HTML5_HTML = """
           </body>
         </html>
 """
+
+EMPTY_TITLE_HTML = """
+<html>
+  <head>
+    <title></title>
+  </head>
+  <body>
+    <h2>H2</h2>
+    <h1>H1</h1>
+    <h1>H1 2</h1>
+  </body>
+</html>"""

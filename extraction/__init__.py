@@ -207,7 +207,7 @@ class Extractor(object):
         cleaned_results = {}
         for data_type, data_values in results.items():
             if data_type in self.text_types:
-                data_values = [self.cleanup_text(x) for x in data_values]
+                data_values = [self.cleanup_text(x) for x in filter(None, data_values)]
             if data_type in self.url_types:
                 data_values = [self.cleanup_url(x, source_url=source_url) for x in data_values]
 
@@ -218,7 +218,7 @@ class Extractor(object):
                     unique_values.append(data_value)
 
             cleaned_results[data_type] = unique_values
-        
+
         return cleaned_results
 
     def extract(self, html, source_url=None):
