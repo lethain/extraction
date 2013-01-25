@@ -119,6 +119,10 @@ class TestSequenceFunctions(unittest.TestCase):
         self.assertEqual(extracted.description, None)
         self.assertEqual(extracted.image, None)
 
+    def test_empty_title(self):
+        "Test that HTML with an empty title sets first h1 heading as title."
+        extracted = self.extractor.extract(EMPTY_TITLE_HTML)
+        self.assertEqual(extracted.title, "H1")
 
 if __name__ == '__main__':
     unittest.main()
