@@ -6,3 +6,4 @@ env/
 build/
 dist/
 MANIFEST
+*.egg-info
