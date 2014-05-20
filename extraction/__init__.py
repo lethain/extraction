@@ -175,14 +175,15 @@ class Extractor(object):
         technique_module_path = ".".join(technique_path_parts[:-1])
         technique_class_name = technique_path_parts[-1]
         technique_module = importlib.import_module(technique_module_path)
-        technique_inst = getattr(technique_module, technique_class_name)(extractor=self)
-        return technique_inst.extract(html)
+        technique_class = getattr(technique_module, technique_class_name)
+        technique_inst = technique_class(extractor=self)
+        return technique_inst.extract(html), technique_class.mark
 
-    def cleanup_text(self, value):
+    def cleanup_text(self, value, mark):
         "Cleanup text values like titles or descriptions."
-        return u" ".join(value.split())
+        return mark + u" " + u" ".join(value.strip().split())
 
-    def cleanup_url(self, value_url, source_url=None):
+    def cleanup_url(self, value_url, source_url, mark):
         """
         Transform relative URLs into absolute URLs if possible.
 
@@ -192,24 +193,26 @@ class Extractor(object):
         """
         value = urlparse.urlparse(value_url)
         if value.netloc or not source_url:
-            return value_url
+            url = value_url
         else:
-            return urlparse.urljoin(source_url, value_url)
+            url = urlparse.urljoin(source_url, value_url)
+        return url + mark
 
-    def cleanup(self, results, html, source_url=None):
+    def cleanup(self, results, source_url=None, mark=""):
         """
         Allows standardizing extracted contents, at this time:
 
         1. removes multiple whitespaces
         2. rewrite relative URLs as absolute URLs if source_url is specified
         3. filter out duplicate values
+        4. marks the technique that produced the result
         """
         cleaned_results = {}
         for data_type, data_values in results.items():
             if data_type in self.text_types:
-                data_values = [self.cleanup_text(x) for x in filter(None, data_values)]
+                data_values = [self.cleanup_text(x, mark) for x in filter(None, data_values)]
             if data_type in self.url_types:
-                data_values = [self.cleanup_url(x, source_url=source_url) for x in data_values]
+                data_values = [self.cleanup_url(x, source_url, mark) for x in data_values]
 
             # filter out duplicate values
             unique_values = []
@@ -237,11 +240,13 @@ class Extractor(object):
         """
         extracted = {}
         for technique in self.techniques:
-            technique_extracted = self.run_technique(technique, html)
-            for data_type, data_values in technique_extracted.items():
+            technique_extracted, technique_mark = self.run_technique(technique, html)
+            technique_cleaned = self.cleanup(
+                technique_extracted, source_url=source_url, mark=technique_mark)
+            for data_type, data_values in technique_cleaned.items():
                 if data_values:
                     if data_type not in extracted:
                         extracted[data_type] = []
                     extracted[data_type] += data_values
 
-        return self.extracted_class(**self.cleanup(extracted, html, source_url=source_url))
+        return self.extracted_class(**extracted)
