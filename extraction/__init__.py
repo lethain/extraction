@@ -180,7 +180,7 @@ class Extractor(object):
 
     def cleanup_text(self, value):
         "Cleanup text values like titles or descriptions."
-        return " ".join(value.split())
+        return u" ".join(value.split())
 
     def cleanup_url(self, value_url, source_url=None):
         """

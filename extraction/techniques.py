@@ -159,10 +159,10 @@ class HTML5SemanticTags(Technique):
         for article in soup.find_all('article') or []:
             title = article.find('h1')
             if title:
-                titles.append(" ".join(title.strings))
+                titles.append(u" ".join(title.strings))
             desc = article.find('p')
             if desc:
-                descriptions.append(" ".join(desc.strings))
+                descriptions.append(u" ".join(desc.strings))
 
         for video in soup.find_all('video') or []:
             for source in video.find_all('source') or []:
@@ -200,7 +200,7 @@ class SemanticTags(Technique):
             for found in soup.find_all(tag)[:max_to_store] or []:
                 if dest not in extracted:
                     extracted[dest] = []
-                extracted[dest].append(" ".join(found.strings))
+                extracted[dest].append(u" ".join(found.strings))
         
 
         for tag, dest, attribute, max_to_store in self.extract_attr:
