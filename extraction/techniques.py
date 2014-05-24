@@ -63,18 +63,6 @@ class HeadTags(Technique):
                         extracted[name_dest] = []
                     extracted[name_dest].append(meta_tag.attrs['content'])
 
-        # extract data from link tags
-        for link_tag in soup.find_all('link'):
-            if 'rel' in link_tag.attrs:
-                if ('alternate' in link_tag['rel'] or link_tag['rel'] == 'alternate') and 'type' in link_tag.attrs and link_tag['type'] == "application/rss+xml" and 'href' in link_tag.attrs:
-                    if 'feeds' not in extracted:
-                        extracted['feeds'] = []
-                    extracted['feeds'].append(link_tag['href'])
-                elif ('canonical' in link_tag['rel'] or link_tag['rel'] == 'canonical') and 'href' in link_tag.attrs:
-                    if 'urls' not in extracted:
-                        extracted['urls'] = []
-                    extracted['urls'].append(link_tag['href'])
-                    
         return extracted
 
 
@@ -157,7 +145,7 @@ class HTML5SemanticTags(Technique):
     
     mark = u"#H5ST"
     def extract(self, html):
-        "Extract data from Facebook Opengraph tags."
+        "Extract data from HTML5 semantic tags."
         titles = []
         descriptions = []
         videos = []
@@ -199,7 +187,7 @@ class SemanticTags(Technique):
     
     mark = u"#SEMT"
     def extract(self, html):
-        "Extract data from Facebook Opengraph tags."
+        "Extract data from usual semantic tags."
         extracted = {}
         soup = BeautifulSoup(html)
         
