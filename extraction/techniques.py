@@ -63,6 +63,19 @@ class HeadTags(Technique):
                         extracted[name_dest] = []
                     extracted[name_dest].append(meta_tag.attrs['content'])
 
+        # extract data from link tags
+        for link_tag in soup.find_all('link'):
+            if 'rel' in link_tag.attrs:
+                if ('canonical' in link_tag['rel'] or link_tag['rel'] == 'canonical') and 'href' in link_tag.attrs:
+                    if 'urls' not in extracted:
+                        extracted['urls'] = []
+                    extracted['urls'].append(link_tag['href'])
+                # # don't bother with feeds
+                # elif ('alternate' in link_tag['rel'] or link_tag['rel'] == 'alternate') and 'type' in link_tag.attrs and link_tag['type'] == "application/rss+xml" and 'href' in link_tag.attrs:
+                #     if 'feeds' not in extracted:
+                #         extracted['feeds'] = []
+                #     extracted['feeds'].append(link_tag['href'])
+
         return extracted
 
 
@@ -148,7 +161,7 @@ class HTML5SemanticTags(Technique):
         "Extract data from HTML5 semantic tags."
         titles = []
         descriptions = []
-        videos = []
+        # videos = []
         soup = BeautifulSoup(html)
         for article in soup.find_all('article') or []:
             title = article.find('h1')
@@ -158,12 +171,13 @@ class HTML5SemanticTags(Technique):
             if desc:
                 descriptions.append(u" ".join(desc.strings))
 
-        for video in soup.find_all('video') or []:
-            for source in video.find_all('source') or []:
-                if 'src' in source.attrs:
-                    videos.append(source['src'])
+        # # don't bother with videos just yet
+        # for video in soup.find_all('video') or []:
+        #     for source in video.find_all('source') or []:
+        #         if 'src' in source.attrs:
+        #             videos.append(source['src'])
 
-        return {'titles':titles, 'descriptions':descriptions, 'videos':videos}
+        return {'titles':titles, 'descriptions':descriptions} # , 'videos':videos}
 
 
 class SemanticTags(Technique):

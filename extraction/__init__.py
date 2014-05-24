@@ -125,7 +125,7 @@ class Extracted(object):
 
 
 class Extractor(object):
-    "Extracts title, summary and image(s) from an HTML document."
+    "Extracts title, description and image(s) from an HTML document."
     techniques = ["extraction.techniques.FacebookOpengraphTags",
                   "extraction.techniques.HeadTags",
                   "extraction.techniques.SemanticTags",
