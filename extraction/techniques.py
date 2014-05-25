@@ -128,6 +128,20 @@ class FacebookOpengraphTags(Technique):
         return extracted
 
 
+class TwitterSummaryCardTags(Technique):
+    """
+    Extract info from the Twitter SummaryCard meta tags.
+    """
+    property_map = {
+
+    }
+
+    mark = u"TWSC"
+    def extract(self, html):
+        extracted = {}
+        return extracted
+
+
 class HTML5SemanticTags(Technique):
     """
     The HTML5 `article` tag, and also the `video` tag give us some useful

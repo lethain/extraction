@@ -126,11 +126,14 @@ class Extracted(object):
 
 class Extractor(object):
     "Extracts title, image and description from an HTML document."
-    techniques = ["extraction.techniques.FacebookOpengraphTags",
-                  "extraction.techniques.HeadTags",
-                  "extraction.techniques.SemanticTags",
-                  "extraction.techniques.HTML5SemanticTags",
-                  ]
+    techniques = [
+        "extraction.techniques.FacebookOpengraphTags",
+        "extraction.techniques.TwitterSummaryCardTags",
+        "extraction.techniques.HeadTags",
+
+        "extraction.techniques.HTML5SemanticTags",
+        "extraction.techniques.SemanticTags"
+    ]
 
     # for determining which cleanup mechanisms to apply
     url_types = ["images" , "urls"]
