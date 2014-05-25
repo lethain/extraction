@@ -125,24 +125,21 @@ class Extracted(object):
 
 
 class Extractor(object):
-    "Extracts title, description and image(s) from an HTML document."
+    "Extracts title, image and description from an HTML document."
     techniques = ["extraction.techniques.FacebookOpengraphTags",
                   "extraction.techniques.HeadTags",
                   "extraction.techniques.SemanticTags",
                   "extraction.techniques.HTML5SemanticTags",
                   ]
-    extracted_class = Extracted
 
     # for determining which cleanup mechanisms to apply
     url_types = ["images" , "urls"]
     text_types = ["titles", "descriptions"]
     
-    def __init__(self, techniques=None, extracted_class=None, *args, **kwargs):
+    def __init__(self, techniques=None, *args, **kwargs):
         "Extractor."
         if techniques:
             self.techniques = techniques
-        if extracted_class:
-            self.extracted_class = extracted_class
 
         super(Extractor, self).__init__(*args, **kwargs)
 
@@ -213,7 +210,7 @@ class Extractor(object):
 
     def extract(self, html, source_url=None):
         """
-        Extract contents from a string representing an HTML document.
+        Extracts contents from an HTML document.
 
             >>> from extraction import Extractor
             >>> import requests
@@ -236,4 +233,4 @@ class Extractor(object):
                         extracted[data_type] = []
                     extracted[data_type] += data_values
 
-        return self.extracted_class(**extracted)
+        return extracted
