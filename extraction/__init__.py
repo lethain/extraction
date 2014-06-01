@@ -183,6 +183,8 @@ class Extractor(object):
             url = value_url
         else:
             url = urlparse.urljoin(source_url, value_url)
+        if url.startswith('//'):
+            url = 'http:' + url # MissingSchema fix
         return url + mark
 
     def cleanup(self, results, source_url=None, mark=""):
