@@ -11,7 +11,6 @@ class Technique(object):
         self.extractor = extractor
         super(Technique, self).__init__(*args, **kwargs)
     
-    mark = u"#BASE"
     def extract(self, html):
         "Extract data from a string representing an HTML document."
         return {'titles': [],
@@ -43,7 +42,6 @@ class HeadTags(Technique):
         "author": "authors",
         }
         
-    mark = u"#HEAD"
     def extract(self, html):
         "Extract data from meta, link and title tags within the head tag."
         extracted = {}
@@ -111,7 +109,6 @@ class FacebookOpengraphTags(Technique):
         'og:description': 'descriptions',
         }
 
-    mark = u"#FBOG"
     def extract(self, html):
         "Extract data from Facebook Opengraph tags."
         extracted = {}
@@ -136,7 +133,6 @@ class TwitterSummaryCardTags(Technique):
 
     }
 
-    mark = u"TWSC"
     def extract(self, html):
         extracted = {}
         return extracted
@@ -170,7 +166,6 @@ class HTML5SemanticTags(Technique):
     behind it for the lower quality, more abundant hits it discovers.
     """
     
-    mark = u"#H5ST"
     def extract(self, html):
         "Extract data from HTML5 semantic tags."
         titles = []
@@ -213,7 +208,6 @@ class SemanticTags(Technique):
     # format is ("name of tag", "destination list", "name of attribute" store_first_n)
     extract_attr = [('img', 'images', 'src', 10)]
     
-    mark = u"#SEMT"
     def extract(self, html):
         "Extract data from usual semantic tags."
         extracted = {}

@@ -11,6 +11,8 @@ Retrieve and extract data from HTML documents.
 import urlparse
 import importlib
 
+MARK_TECHNIQUE = True # u"" # False # True
+
 class Extracted(object):
     "Contains data extracted from a page."
 
@@ -164,11 +166,14 @@ class Extractor(object):
         technique_module = importlib.import_module(technique_module_path)
         technique_class = getattr(technique_module, technique_class_name)
         technique_inst = technique_class(extractor=self)
-        return technique_inst.extract(html), technique_class.mark
+        return technique_inst.extract(html)
 
     def cleanup_text(self, value, mark):
         "Cleanup text values like titles or descriptions."
-        return mark + u" " + u" ".join(value.strip().split())
+        text = u" ".join(value.strip().split())
+        if mark:
+            text = u"%s %s" % (mark, text)
+        return text
 
     def cleanup_url(self, value_url, source_url, mark):
         """
@@ -185,9 +190,11 @@ class Extractor(object):
             url = urlparse.urljoin(source_url, value_url)
         if url.startswith('//'):
             url = 'http:' + url # MissingSchema fix
-        return url + mark
+        if mark:
+            url = url + mark
+        return url
 
-    def cleanup(self, results, source_url=None, mark=""):
+    def cleanup(self, results, source_url=None, technique=""):
         """
         Allows standardizing extracted contents, at this time:
 
@@ -197,6 +204,8 @@ class Extractor(object):
         4. marks the technique that produced the result
         """
         cleaned_results = {}
+        mark = MARK_TECHNIQUE and u"#" + technique.split('.')[-1]
+
         for data_type, data_values in results.items():
             if data_type in self.text_types:
                 data_values = [self.cleanup_text(x, mark) for x in filter(None, data_values)]
@@ -229,9 +238,9 @@ class Extractor(object):
         """
         extracted = {}
         for technique in self.techniques:
-            technique_extracted, technique_mark = self.run_technique(technique, html)
+            technique_extracted = self.run_technique(technique, html)
             technique_cleaned = self.cleanup(
-                technique_extracted, source_url=source_url, mark=technique_mark)
+                technique_extracted, source_url=source_url, technique=technique)
             for data_type, data_values in technique_cleaned.items():
                 if data_values:
                     if data_type not in extracted:
