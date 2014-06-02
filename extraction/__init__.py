@@ -11,7 +11,7 @@ Retrieve and extract data from HTML documents.
 import urlparse
 import importlib
 
-MARK_TECHNIQUE = True # u"" # False # True
+MARK_TECHNIQUE = u"" # False # True
 
 class Extracted(object):
     "Contains data extracted from a page."
