@@ -174,7 +174,7 @@ class DictExtractor(object):
     ]
 
     # for determining which cleanup mechanisms to apply
-    url_types = ["images" , "urls", "feeds", "videos"]
+    url_types = ["images", "urls", "feeds", "videos"]
     text_types = ["titles", "descriptions"]
 
     def __init__(self, techniques=None, *args, **kwargs):
@@ -238,6 +238,7 @@ class DictExtractor(object):
         2. rewrite relative URLs as absolute URLs if source_url is specified
         3. filter out duplicate values
         4. marks the technique that produced the result
+        5. returns only specified text_types and url_types
         """
         cleaned_results = {}
         mark = MARK_TECHNIQUE and u"#" + technique.split('.')[-1]
@@ -245,8 +246,10 @@ class DictExtractor(object):
         for data_type, data_values in results.items():
             if data_type in self.text_types:
                 data_values = [self.cleanup_text(x, mark) for x in filter(None, data_values)]
-            if data_type in self.url_types:
+            elif data_type in self.url_types:
                 data_values = [self.cleanup_url(x, source_url, mark) for x in data_values]
+            else:
+                continue
 
             # filter out duplicate values
             unique_values = []
@@ -308,4 +311,5 @@ class Extractor(DictExtractor):
 
 class SvvenExtractor(DictExtractor):
     "Example subclass for Svven news aggregator."
-    url_types = ["feeds"]
+    url_types = ["images", "urls"]
+    text_types = ["titles", "descriptions"]
