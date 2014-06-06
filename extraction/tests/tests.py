@@ -68,7 +68,7 @@ class TestSequenceFunctions(unittest.TestCase):
 
     def test_technique_twitter_meta_tags(self):
         # make sure the shuffled sequence does not lose any elements
-        self.extractor.techniques = ["extraction.techniques.FacebookOpengraphTags"]
+        self.extractor.techniques = ["extraction.techniques.TwitterSummaryCardTags"]
         extracted = self.extractor.extract(TWITTER_HTML)
         self.assertEqual(extracted.title, "Parade of Fans for Houston's Funeral")
         self.assertEqual(extracted.titles, ["Parade of Fans for Houston's Funeral"])

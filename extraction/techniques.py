@@ -99,6 +99,7 @@ class FacebookOpengraphTags(Technique):
     There are a bunch of other opengraph tags, but they don't seem
     useful to extraction's intent at this point.
     """
+    key_attr = 'property'
     property_map = {
         'og:title': 'titles',
         'og:url': 'urls',
@@ -111,8 +112,8 @@ class FacebookOpengraphTags(Technique):
         extracted = {}
         soup = BeautifulSoup(html)
         for meta_tag in soup.find_all('meta'):
-            if 'property' in meta_tag.attrs and 'content' in meta_tag.attrs:
-                property = meta_tag['property']
+            if self.key_attr in meta_tag.attrs and 'content' in meta_tag.attrs:
+                property = meta_tag[self.key_attr]
                 if property in self.property_map:
                     property_dest = self.property_map[property]
                     if property_dest not in extracted:
@@ -122,17 +123,16 @@ class FacebookOpengraphTags(Technique):
         return extracted
 
 
-class TwitterSummaryCardTags(Technique):
+class TwitterSummaryCardTags(FacebookOpengraphTags):
     """
     Extract info from the Twitter SummaryCard meta tags.
     """
+    key_attr = 'name'
     property_map = {
-
+        'twitter:title': 'titles',
+        'twitter:description': 'descriptions',
+        'twitter:image': 'images',
     }
-
-    def extract(self, html):
-        extracted = {}
-        return extracted
 
 
 class HTML5SemanticTags(Technique):
