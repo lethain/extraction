@@ -177,8 +177,9 @@ class DictExtractor(object):
     url_types = ["images", "urls", "feeds", "videos"]
     text_types = ["titles", "descriptions"]
 
-    def __init__(self, techniques=None, *args, **kwargs):
+    def __init__(self, techniques=None, strict_types=False, *args, **kwargs):
         "Extractor."
+        self.strict_types = strict_types
         if techniques:
             self.techniques = techniques
 
@@ -238,7 +239,7 @@ class DictExtractor(object):
         2. rewrite relative URLs as absolute URLs if source_url is specified
         3. filter out duplicate values
         4. marks the technique that produced the result
-        5. returns only specified text_types and url_types
+        5. returns only specified text_types and url_types depending on self.strict_types
         """
         cleaned_results = {}
         mark = MARK_TECHNIQUE and u"#" + technique.split('.')[-1]
@@ -248,7 +249,7 @@ class DictExtractor(object):
                 data_values = [self.cleanup_text(x, mark) for x in filter(None, data_values)]
             elif data_type in self.url_types:
                 data_values = [self.cleanup_url(x, source_url, mark) for x in data_values]
-            else:
+            elif self.strict_types:
                 continue
 
             # filter out duplicate values
@@ -313,3 +314,8 @@ class SvvenExtractor(DictExtractor):
     "Example subclass for Svven news aggregator."
     url_types = ["images", "urls"]
     text_types = ["titles", "descriptions"]
+
+    def __init__(self, *args, **kwargs):
+        "Extractor which defaults to strict_types being true."
+        kwargs.setdefault('strict_types', True)
+        super(SvvenExtractor, self).__init__(*args, **kwargs)
