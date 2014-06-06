@@ -22,7 +22,6 @@ class TestSequenceFunctions(unittest.TestCase):
         # rewrites ../digg_v4/initial_org.png
         self.assertEqual(extracted.images[1], "http://lethain.com/digg_v4/initial_org.png")
 
-
     def test_removing_duplicate_values(self):
         "We shouldn't suggest the same extracted value multiple times."
         extracted = self.extractor.extract(DUPLICATES_HTML)
@@ -67,6 +66,18 @@ class TestSequenceFunctions(unittest.TestCase):
         self.assertTrue(extracted.description, "A group of U.S. Marines, under command of a renegade general, take over Alcatraz and threaten San Francisco Bay with biological weapons.")
         self.assertEqual(len(extracted.descriptions), 1)
 
+    def test_technique_twitter_meta_tags(self):
+        # make sure the shuffled sequence does not lose any elements
+        self.extractor.techniques = ["extraction.techniques.TwitterSummaryCardTags"]
+        extracted = self.extractor.extract(TWITTER_HTML)
+        self.assertEqual(extracted.title, "Parade of Fans for Houston's Funeral")
+        self.assertEqual(extracted.titles, ["Parade of Fans for Houston's Funeral"])
+        self.assertEqual(extracted.url, None)
+        self.assertEqual(extracted.image, "http://graphics8.nytimes.com/images/2012/02/19/us/19whitney-span/19whitney-span-article.jpg")
+        self.assertEqual(extracted.images, ["http://graphics8.nytimes.com/images/2012/02/19/us/19whitney-span/19whitney-span-article.jpg"])
+        self.assertTrue(extracted.description, "NEWARK - The guest list and parade of limousines with celebrities emerging from them seemed more suited to a red carpet event in Hollywood or New York than than a gritty stretch of Sussex Avenue near the former site of the James M. Baxter Terrace public housing project here.")
+        self.assertEqual(len(extracted.descriptions), 1)
+
     def test_technique_head_tags(self):
         "Test extracting page information from HTML head tags (meta, title, ...)."
         self.extractor.techniques = ["extraction.techniques.HeadTags"]
@@ -94,7 +105,8 @@ class TestSequenceFunctions(unittest.TestCase):
         extracted = self.extractor.extract(HTML5_HTML)
         self.assertEqual(extracted.title, 'This is a title')
         self.assertEqual(extracted.description, 'This is a description.')
-        self.assertEqual(extracted._unexpected_values['videos'], ["this_is_a_video.mp4"])
+        self.assertEqual(extracted.video, "this_is_a_video.mp4")
+        self.assertEqual(extracted.videos, ["this_is_a_video.mp4"])
 
     def test_example_lethain_com_technique(self):
         "Test extracting data from lethain.com with a custom technique in extraction.examples."

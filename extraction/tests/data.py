@@ -1,5 +1,23 @@
 "Contains data for tests.py to declutter a bit."
 
+TWITTER_HTML = """
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.01//EN" "http://www.w3.org/TR/html4/strict.dtd">
+<html>
+<head>
+<meta name="twitter:card" content="summary">
+<meta name="twitter:site" content="@nytimes">
+<meta name="twitter:creator" content="@SarahMaslinNir">
+<meta name="twitter:title" content="Parade of Fans for Houston's Funeral">
+<meta name="twitter:description" content="NEWARK - The guest list and parade of limousines with celebrities emerging from them seemed more suited to a red carpet event in Hollywood or New York than than a gritty stretch of Sussex Avenue near the former site of the James M. Baxter Terrace public housing project here.">
+<meta name="twitter:image" content="http://graphics8.nytimes.com/images/2012/02/19/us/19whitney-span/19whitney-span-article.jpg">
+</head>
+<body>
+<h1>The HTML title</h1>
+</body>
+</html>
+"""
+
+
 FACEBOOK_HTML = """
 <!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.01//EN" "http://www.w3.org/TR/html4/strict.dtd">
 <html>
