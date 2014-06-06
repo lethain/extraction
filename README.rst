@@ -74,7 +74,7 @@ you can install from GitHub::
     virtualenv env
     . ./env/bin/activate
     pip install -r requirements.txt
-    python setup.py develop
+    pip install -e .
 
 Then you can run the tests::
 

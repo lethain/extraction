@@ -10,7 +10,7 @@ class Technique(object):
         """
         self.extractor = extractor
         super(Technique, self).__init__(*args, **kwargs)
-
+    
     def extract(self, html):
         "Extract data from a string representing an HTML document."
         return {'titles': [],
@@ -18,6 +18,7 @@ class Technique(object):
                 'images': [],
                 'urls': [],
                 }
+
 
 class HeadTags(Technique):
     """
@@ -62,18 +63,16 @@ class HeadTags(Technique):
         # extract data from link tags
         for link_tag in soup.find_all('link'):
             if 'rel' in link_tag.attrs:
-                if ('alternate' in link_tag['rel'] or link_tag['rel'] == 'alternate') and 'type' in link_tag.attrs and link_tag['type'] == "application/rss+xml" and 'href' in link_tag.attrs:
-                    if 'feeds' not in extracted:
-                        extracted['feeds'] = []
-                    extracted['feeds'].append(link_tag['href'])
-                elif ('canonical' in link_tag['rel'] or link_tag['rel'] == 'canonical') and 'href' in link_tag.attrs:
+                if ('canonical' in link_tag['rel'] or link_tag['rel'] == 'canonical') and 'href' in link_tag.attrs:
                     if 'urls' not in extracted:
                         extracted['urls'] = []
                     extracted['urls'].append(link_tag['href'])
-                    
+                elif ('alternate' in link_tag['rel'] or link_tag['rel'] == 'alternate') and 'type' in link_tag.attrs and link_tag['type'] == "application/rss+xml" and 'href' in link_tag.attrs:
+                     if 'feeds' not in extracted:
+                         extracted['feeds'] = []
+                     extracted['feeds'].append(link_tag['href'])
         return extracted
 
-    
 
 class FacebookOpengraphTags(Technique):
     """
@@ -100,6 +99,7 @@ class FacebookOpengraphTags(Technique):
     There are a bunch of other opengraph tags, but they don't seem
     useful to extraction's intent at this point.
     """
+    key_attr = 'property'
     property_map = {
         'og:title': 'titles',
         'og:url': 'urls',
@@ -112,8 +112,8 @@ class FacebookOpengraphTags(Technique):
         extracted = {}
         soup = BeautifulSoup(html)
         for meta_tag in soup.find_all('meta'):
-            if 'property' in meta_tag.attrs and 'content' in meta_tag.attrs:
-                property = meta_tag['property']
+            if self.key_attr in meta_tag.attrs and 'content' in meta_tag.attrs:
+                property = meta_tag[self.key_attr]
                 if property in self.property_map:
                     property_dest = self.property_map[property]
                     if property_dest not in extracted:
@@ -121,6 +121,18 @@ class FacebookOpengraphTags(Technique):
                     extracted[property_dest].append(meta_tag.attrs['content'])
 
         return extracted
+
+
+class TwitterSummaryCardTags(FacebookOpengraphTags):
+    """
+    Extract info from the Twitter SummaryCard meta tags.
+    """
+    key_attr = 'name'
+    property_map = {
+        'twitter:title': 'titles',
+        'twitter:description': 'descriptions',
+        'twitter:image': 'images',
+    }
 
 
 class HTML5SemanticTags(Technique):
@@ -150,8 +162,9 @@ class HTML5SemanticTags(Technique):
     of cases where it hits, and otherwise expects `SemanticTags` to run sweep
     behind it for the lower quality, more abundant hits it discovers.
     """
+    
     def extract(self, html):
-        "Extract data from Facebook Opengraph tags."
+        "Extract data from HTML5 semantic tags."
         titles = []
         descriptions = []
         videos = []
@@ -159,10 +172,10 @@ class HTML5SemanticTags(Technique):
         for article in soup.find_all('article') or []:
             title = article.find('h1')
             if title:
-                titles.append(" ".join(title.strings))
+                titles.append(u" ".join(title.strings))
             desc = article.find('p')
             if desc:
-                descriptions.append(" ".join(desc.strings))
+                descriptions.append(u" ".join(desc.strings))
 
         for video in soup.find_all('video') or []:
             for source in video.find_all('source') or []:
@@ -190,9 +203,9 @@ class SemanticTags(Technique):
                       ]
     # format is ("name of tag", "destination list", "name of attribute" store_first_n)
     extract_attr = [('img', 'images', 'src', 10)]
-
+    
     def extract(self, html):
-        "Extract data from Facebook Opengraph tags."
+        "Extract data from usual semantic tags."
         extracted = {}
         soup = BeautifulSoup(html)
         
@@ -200,8 +213,7 @@ class SemanticTags(Technique):
             for found in soup.find_all(tag)[:max_to_store] or []:
                 if dest not in extracted:
                     extracted[dest] = []
-                extracted[dest].append(" ".join(found.strings))
-        
+                extracted[dest].append(u" ".join(found.strings))
 
         for tag, dest, attribute, max_to_store in self.extract_attr:
             for found in soup.find_all(tag)[:max_to_store] or []:
