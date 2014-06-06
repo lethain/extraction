@@ -1,3 +1,4 @@
+v0.2.0, 06/06/2014 -- Add Twitter cards extractor, DictExtractor, other fixes from @ducu.
 v0.1.3, 11/23/2012 -- Add html5lib to dependencies to ensure parsing is possible.
 v0.1.2, 11/23/2012 -- Update setup.py dependencies for saner installation, again.
 v0.1.1, 11/23/2012 -- Update setup.py dependencies for saner installation.
