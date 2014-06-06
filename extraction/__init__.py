@@ -11,12 +11,17 @@ Retrieve and extract data from HTML documents.
 import urlparse
 import importlib
 
-MARK_TECHNIQUE = u"" # False # True
+
+# This is a debugging mechanism, and if enabled will add a hash
+# to crawled URLS showing which Technique extracted the data.
+# Should be True or False. Usually should be False.
+MARK_TECHNIQUE = False
+
 
 class Extracted(object):
     "Contains data extracted from a page."
 
-    def __init__(self, titles=None, descriptions=None, images=None, urls=None, **kwargs):
+    def __init__(self, titles=None, descriptions=None, images=None, videos=None, urls=None, feeds=None, **kwargs):
         """
         Initialize Extracted instance.
 
@@ -55,18 +60,26 @@ class Extracted(object):
             descriptions = []
         if images is None:
             images = []
+        if videos is None:
+            videos = []
         if urls is None:
             urls = []
+        if feeds is None:
+            feeds = []
 
         assert type(titles) in (list, tuple), "titles must be a list or tuple"
         assert type(descriptions) in (list, tuple), "descriptions must be a list or tuple"
         assert type(images) in (list, tuple), "images must be a list or tuple"
+        assert type(videos) in (list, tuple), "videos must be a list or tuple"
         assert type(urls) in (list, tuple), "urls must be a list or tuple"
+        assert type(feeds) in (list, tuple), "feeds must be a list or tuple"
 
         self.titles = titles
         self.descriptions = descriptions
         self.images = images
         self.urls = urls
+        self.feeds = feeds
+        self.videos = videos
 
         # stores unexpected and uncaptured values to avoid crashing if
         # a technique returns additional types of data
@@ -77,7 +90,9 @@ class Extracted(object):
         details = (("title", self.titles),
                    ("url", self.urls),
                    ("image", self.images),
+                   ("videos", self.videos),
                    ("description", self.descriptions),
+                   ("feed", self.feeds),
                    )
 
         details_strs = []
@@ -110,6 +125,14 @@ class Extracted(object):
             return None
 
     @property
+    def video(self):
+        "Return the best video, if any."
+        if self.videos:
+            return self.videos[0]
+        else:
+            return None
+
+    @property
     def description(self):
         "Return the best description, if any."
         if self.descriptions:
@@ -125,28 +148,41 @@ class Extracted(object):
         else:
             return None
 
+    @property
+    def feed(self):
+        "Return the best feed, if any."
+        if self.feeds:
+            return self.feeds[0]
+        else:
+            return None
 
-class Extractor(object):
-    "Extracts title, image and description from an HTML document."
+
+class DictExtractor(object):
+    """
+    Extracts title, image and description from an HTML document.
+
+    Returns extracted data as a dictionary. If you want to return
+    the results as an ``Extracted``, then use ``Extractor`` instead
+    of ``DictExtractor``.
+    """
     techniques = [
         "extraction.techniques.FacebookOpengraphTags",
         "extraction.techniques.TwitterSummaryCardTags",
         "extraction.techniques.HeadTags",
-
         "extraction.techniques.HTML5SemanticTags",
         "extraction.techniques.SemanticTags"
     ]
 
     # for determining which cleanup mechanisms to apply
-    url_types = ["images" , "urls"]
+    url_types = ["images" , "urls", "feeds", "videos"]
     text_types = ["titles", "descriptions"]
-    
+
     def __init__(self, techniques=None, *args, **kwargs):
         "Extractor."
         if techniques:
             self.techniques = techniques
 
-        super(Extractor, self).__init__(*args, **kwargs)
+        super(DictExtractor, self).__init__(*args, **kwargs)
 
     def run_technique(self, technique, html):
         """
@@ -239,12 +275,37 @@ class Extractor(object):
         extracted = {}
         for technique in self.techniques:
             technique_extracted = self.run_technique(technique, html)
-            technique_cleaned = self.cleanup(
-                technique_extracted, source_url=source_url, technique=technique)
+            technique_cleaned = self.cleanup(technique_extracted, source_url=source_url, technique=technique)
             for data_type, data_values in technique_cleaned.items():
                 if data_values:
                     if data_type not in extracted:
                         extracted[data_type] = []
-                    extracted[data_type] += data_values
 
+                    # don't include duplicate values
+                    unique_data_values = [x for x in data_values if x not in extracted[data_type]]
+                    extracted[data_type] += unique_data_values
         return extracted
+
+
+class Extractor(DictExtractor):
+    """
+    Subclass of ``DictExtractor`` which wraps results in a
+    subclass of ``Extracted`` for greater control.
+    """
+    extracted_class = Extracted
+
+    def __init__(self, extracted_class=None, *args, **kwargs):
+        "Initialize Extractor instance."
+        super(Extractor, self).__init__(*args, **kwargs)
+        if extracted_class:
+            self.extracted_class = extracted_class
+
+    def extract(self, *args, **kwargs):
+        "Extract contents from an HTML document."
+        extract_dict = super(Extractor, self).extract(*args, **kwargs)
+        return self.extracted_class(**extract_dict)
+
+
+class SvvenExtractor(DictExtractor):
+    "Example subclass for Svven news aggregator."
+    url_types = ["feeds"]
