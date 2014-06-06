@@ -28,6 +28,18 @@ class TestSequenceFunctions(unittest.TestCase):
         self.assertEqual(extracted.titles, ["Hi"])
         self.assertEqual(extracted.descriptions, ["This is awesome."])
 
+    def test_restricting_types(self):
+        "Ensure we can avoid parsing types we don't want."
+        class NoVideosFeedsExtractor(extraction.Extractor):
+            "A very picky extractor."
+            url_types = ["images", "urls"]
+
+        extracted = NoVideosFeedsExtractor().extract(LETHAIN_COM_HTML)
+        self.assertTrue(extracted.titles)
+        self.assertTrue(extracted.descriptions)
+        self.assertFalse(extracted.feeds)
+        self.assertFalse(extracted.videos)
+
     def test_default_techniques(self):
         """
         Test running the default techniques list with a simple page.
@@ -40,6 +52,7 @@ class TestSequenceFunctions(unittest.TestCase):
         self.assertTrue(extracted.urls)
         self.assertTrue(extracted.descriptions)
         self.assertTrue(extracted.feeds)
+        self.assertFalse(extracted.videos)
 
     def test_default_techniques_on_empty_page(self):
         """

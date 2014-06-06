@@ -175,10 +175,11 @@ class DictExtractor(object):
 
     # for determining which cleanup mechanisms to apply
     url_types = ["images" , "urls", "feeds", "videos"]
-    text_types = ["titles", "descriptions"]
+    text_types = ["titles", "descriptions", "authors"]
 
     def __init__(self, techniques=None, *args, **kwargs):
         "Extractor."
+        self.all_types = set(self.url_types + self.text_types)
         if techniques:
             self.techniques = techniques
 
@@ -308,4 +309,4 @@ class Extractor(DictExtractor):
 
 class SvvenExtractor(DictExtractor):
     "Example subclass for Svven news aggregator."
-    url_types = ["feeds"]
+    url_types = ["images" , "urls"]

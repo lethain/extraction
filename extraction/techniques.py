@@ -10,6 +10,10 @@ class Technique(object):
         """
         self.extractor = extractor
         super(Technique, self).__init__(*args, **kwargs)
+
+    def should_attempt_extracting(self, prop):
+        "Whether or not to try extracting a given property, e.g. 'videos' or 'feeds'."
+        return prop in self.extractor.all_types
     
     def extract(self, html):
         "Extract data from a string representing an HTML document."
@@ -39,16 +43,18 @@ class HeadTags(Technique):
     meta_name_map = {
         "description": "descriptions",
         "author": "authors",
-        }
+    }
 
     def extract(self, html):
         "Extract data from meta, link and title tags within the head tag."
         extracted = {}
         soup = BeautifulSoup(html)
+
         # extract data from title tag
-        title_tag = soup.find('title')
-        if title_tag:
-            extracted['titles'] = [title_tag.string]
+        if self.should_attempt_extracting('titles'):
+            title_tag = soup.find('title')
+            if title_tag:
+                extracted['titles'] = [title_tag.string]
 
         # extract data from meta tags
         for meta_tag in soup.find_all('meta'):
@@ -56,18 +62,23 @@ class HeadTags(Technique):
                 name = meta_tag['name']
                 if name in self.meta_name_map:
                     name_dest = self.meta_name_map[name]
-                    if name_dest not in extracted:
+                    if self.should_attempt_extracting(name_dest) and name_dest not in extracted:
                         extracted[name_dest] = []
                     extracted[name_dest].append(meta_tag.attrs['content'])
 
         # extract data from link tags
         for link_tag in soup.find_all('link'):
             if 'rel' in link_tag.attrs:
-                if ('canonical' in link_tag['rel'] or link_tag['rel'] == 'canonical') and 'href' in link_tag.attrs:
+                if self.should_attempt_extracting('urls') and \
+                   ('canonical' in link_tag['rel'] or link_tag['rel'] == 'canonical') and \
+                   'href' in link_tag.attrs:
                     if 'urls' not in extracted:
                         extracted['urls'] = []
                     extracted['urls'].append(link_tag['href'])
-                elif ('alternate' in link_tag['rel'] or link_tag['rel'] == 'alternate') and 'type' in link_tag.attrs and link_tag['type'] == "application/rss+xml" and 'href' in link_tag.attrs:
+                elif self.should_attempt_extracting('feeds') and \
+                     ('alternate' in link_tag['rel'] or link_tag['rel'] == 'alternate') and \
+                     'type' in link_tag.attrs and link_tag['type'] == "application/rss+xml" and \
+                     'href' in link_tag.attrs:
                      if 'feeds' not in extracted:
                          extracted['feeds'] = []
                      extracted['feeds'].append(link_tag['href'])
@@ -116,7 +127,7 @@ class FacebookOpengraphTags(Technique):
                 property = meta_tag[self.key_attr]
                 if property in self.property_map:
                     property_dest = self.property_map[property]
-                    if property_dest not in extracted:
+                    if self.should_attempt_extracting(property_dest) and property_dest not in extracted:
                         extracted[property_dest] = []
                     extracted[property_dest].append(meta_tag.attrs['content'])
 
@@ -168,19 +179,23 @@ class HTML5SemanticTags(Technique):
         titles = []
         descriptions = []
         videos = []
-        soup = BeautifulSoup(html)
+        soup = BeautifulSoup(html)        
         for article in soup.find_all('article') or []:
-            title = article.find('h1')
-            if title:
-                titles.append(u" ".join(title.strings))
-            desc = article.find('p')
-            if desc:
-                descriptions.append(u" ".join(desc.strings))
+            if self.should_attempt_extracting('titles'):
+                title = article.find('h1')
+                if title:
+                    titles.append(u" ".join(title.strings))
 
-        for video in soup.find_all('video') or []:
-            for source in video.find_all('source') or []:
-                if 'src' in source.attrs:
-                    videos.append(source['src'])
+            if self.should_attempt_extracting('descriptions'):
+                desc = article.find('p')
+                if desc:
+                    descriptions.append(u" ".join(desc.strings))
+
+        if self.should_attempt_extracting('videos'):
+            for video in soup.find_all('video') or []:
+                for source in video.find_all('source') or []:
+                    if 'src' in source.attrs:
+                        videos.append(source['src'])
 
         return {'titles':titles, 'descriptions':descriptions, 'videos':videos}
 
@@ -210,17 +225,19 @@ class SemanticTags(Technique):
         soup = BeautifulSoup(html)
         
         for tag, dest, max_to_store in self.extract_string:
-            for found in soup.find_all(tag)[:max_to_store] or []:
-                if dest not in extracted:
-                    extracted[dest] = []
-                extracted[dest].append(u" ".join(found.strings))
-
-        for tag, dest, attribute, max_to_store in self.extract_attr:
-            for found in soup.find_all(tag)[:max_to_store] or []:
-                if attribute in found.attrs:
+            if self.should_attempt_extracting(dest):
+                for found in soup.find_all(tag)[:max_to_store] or []:
                     if dest not in extracted:
                         extracted[dest] = []
-                    extracted[dest].append(found[attribute])
+                    extracted[dest].append(u" ".join(found.strings))
+
+        for tag, dest, attribute, max_to_store in self.extract_attr:
+            if self.should_attempt_extracting(dest):
+                for found in soup.find_all(tag)[:max_to_store] or []:
+                    if attribute in found.attrs:
+                        if dest not in extracted:
+                            extracted[dest] = []
+                        extracted[dest].append(found[attribute])
 
         return extracted
     
