@@ -155,6 +155,7 @@ The default ordering of techniques is within the  extraction.Extractor's
 `techniques` class variable, and is::
 
     extraction.techniques.FacebookOpengraphTags
+    extraction.techniques.TwitterSummaryCardTags
     extraction.techniques.HTML5SemanticTags
     extraction.techniques.HeadTags
     extraction.techniques.SemanticTags
@@ -348,7 +349,6 @@ While the head tag is authoritative source of canonical URLs and RSS,
 it's often very hit or miss for titles, descriptions and such.
 At worst, it's better than nothing.
 
-
 extraction.techniques.FacebookOpengraphTags
 -------------------------------------------
 
@@ -366,6 +366,30 @@ This technique uses Opengraph tags, which look like this::
     </head>
 
 as their source of data.
+
+
+extraction.techniques.TwitterSummaryCardTags
+-------------------------------------------
+
+Another, increasingly common set of meta tags is the `Twitter Card tags <https://dev.twitter.com/docs/cards/types/summary-card>`_.
+This technique parses those tags, which look like::
+
+    <head>
+        ...
+        <meta name="twitter:card" content="summary">
+        <meta name="twitter:site" content="@nytimes">
+        <meta name="twitter:creator" content="@SarahMaslinNir">
+        <meta name="twitter:title" content="Parade of Fans for Houston’s Funeral">
+        <meta name="twitter:description" content="NEWARK - The guest list and parade...">
+        <meta name="twitter:image" content="http://graphics8.nytimes.com/images/2012/02/19/us/19whitney-span/19whitney-span-article.jpg">
+        ...
+    </head>
+
+For sites with cards integration (which many high quality sites have, because it's necessary for
+rendering with images in the Twitter feed), this will be a very high quality source of data.
+
+One oddity is that Twitter cards don't include a URL tag, so they don't help much with
+canonicalizing articles.
 
 
 extraction.techniques.HTML5SemanticTags
