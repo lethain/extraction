@@ -11,8 +11,7 @@ Extraction is not a web crawling or content retrieval mechanism, rather
 it is a tool to use on data which has always been retrieved or crawled
 by a different tool.
 
-Developed against Python 2.7, but should also work with Python 2.6+ if
-you install the importlib requirement.
+Updated to work with Python3.
 
 See on `Github <https://github.com/lethain/extraction>`_, or on
 `PyPi <http://pypi.python.org/pypi/extraction/0.1.0>`_.
@@ -71,7 +70,7 @@ you can install from GitHub::
 
     git clone
     cd extraction
-    virtualenv env
+    python3 -m venv env    
     . ./env/bin/activate
     pip install -r requirements.txt
     pip install -e .

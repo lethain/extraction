@@ -35,7 +35,7 @@ class LethainComTechnique(Technique):
     """
     def extract(self, html):
         "Extract data from lethain.com."
-        soup = BeautifulSoup(html)
+        soup = BeautifulSoup(html, features="html5lib")
         page_div = soup.find('div', class_='page')
         text_div = soup.find('div', class_='text')
         return { 'titles': [page_div.find('h2').string],

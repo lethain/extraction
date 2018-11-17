@@ -85,7 +85,7 @@ class TestSequenceFunctions(unittest.TestCase):
         self.assertEqual(extracted.title, "Digg v4's Architecture and Development Processes - Irrational Exuberance")
         self.assertEqual(extracted.url, "http://lethain.com/digg-v4-architecture-process/")
         self.assertEqual(extracted.image, None)
-        self.assertEquals(extracted.description, "Will Larson's blog about programming and other things.")
+        self.assertEqual(extracted.description, "Will Larson's blog about programming and other things.")
         self.assertEqual(extracted.feed, "http://lethain.com/feeds/")
         self.assertEqual(extracted._unexpected_values['authors'], ["Will Larson"])
 
@@ -97,7 +97,7 @@ class TestSequenceFunctions(unittest.TestCase):
         self.assertEqual(extracted.url, None)
         self.assertEqual(extracted.image, "/static/blog/digg_v4/initial_org.png")
         self.assertEqual(len(extracted.images), 2)
-        self.assertEquals(extracted.description.split(), "A month ago history reset with the second launch of Digg v1 , and memories are starting to fade since much of the Digg team joined SocialCode four months ago, so it seemed like a good time to describe the system and team architecture which ran and developed Digg.com from May 2010 until May 2012.".split())
+        self.assertEqual(extracted.description.split(), "A month ago history reset with the second launch of Digg v1 , and memories are starting to fade since much of the Digg team joined SocialCode four months ago, so it seemed like a good time to describe the system and team architecture which ran and developed Digg.com from May 2010 until May 2012.".split())
 
     def test_technique_html_semantic_tags(self):
         "Test extracting data from an HTML5 page."
@@ -118,7 +118,7 @@ class TestSequenceFunctions(unittest.TestCase):
         self.assertEqual(extracted._unexpected_values['dates'], [u'08/19/2012'])
         self.assertEqual(extracted.image, "/static/blog/digg_v4/initial_org.png")
         self.assertEqual(len(extracted.images), 2)
-        self.assertEquals(extracted.description.split(), "A month ago history reset with the second launch of Digg v1 , and memories are starting to fade since much of the Digg team joined SocialCode four months ago, so it seemed like a good time to describe the system and team architecture which ran and developed Digg.com from May 2010 until May 2012.".split())
+        self.assertEqual(extracted.description.split(), "A month ago history reset with the second launch of Digg v1 , and memories are starting to fade since much of the Digg team joined SocialCode four months ago, so it seemed like a good time to describe the system and team architecture which ran and developed Digg.com from May 2010 until May 2012.".split())
 
     def test_example_new_return_type(self):
         "Test returning a non-standard datatype, in this case addresses."
