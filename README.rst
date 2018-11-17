@@ -11,7 +11,7 @@ Extraction is not a web crawling or content retrieval mechanism, rather
 it is a tool to use on data which has always been retrieved or crawled
 by a different tool.
 
-Updated to work with Python3.
+Updated to work with Python3. `See the last Python 2.x compatible version here <https://github.com/lethain/extraction/tree/c96afe2a9fd6a6d1fc1ad8eb793b43e2b9c1484c>`_.
 
 See on `Github <https://github.com/lethain/extraction>`_, or on
 `PyPi <http://pypi.python.org/pypi/extraction/0.1.0>`_.
